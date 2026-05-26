@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/failsafe-go/failsafe-go"
-	"github.com/failsafe-go/failsafe-go/policy"
 )
 
 type key int
@@ -14,7 +13,8 @@ const CacheKey key = 0
 
 // ContextWithCacheKey returns a context with the cache key.
 func ContextWithCacheKey(ctx context.Context, key string) context.Context {
-	return context.WithValue(ctx, CacheKey, key)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // Cache is a simple interface for cached values that can be adapted to different cache backends.
@@ -76,57 +76,39 @@ var _ Builder[any] = &config[any]{}
 
 // New returns a new CachePolicy. The resulting CachePolicy will only be used with executions that provide a Context
 // containing a CacheKey value.
-func New[R any](cache Cache[R]) CachePolicy[R] {
-	return NewBuilder[R](cache).Build()
-}
+func New[R any](cache Cache[R]) CachePolicy[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder returns a Builder.
-func NewBuilder[R any](cache Cache[R]) Builder[R] {
-	return &config[R]{
-		cache: cache,
-	}
-}
+func NewBuilder[R any](cache Cache[R]) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) CacheIf(predicate func(R, error) bool) Builder[R] {
-	c.cacheConditions = append(c.cacheConditions, predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) WithKey(key string) Builder[R] {
-	c.key = key
-	return c
-}
+func (c *config[R]) WithKey(key string) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) OnCacheHit(listener func(event failsafe.ExecutionDoneEvent[R])) Builder[R] {
-	c.onHit = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnCacheMiss(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onMiss = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnResultCached(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onCache = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() CachePolicy[R] {
-	return &cachePolicy[R]{
-		config: *c, // TODO copy base fields
-	}
-}
+func (c *config[R]) Build() CachePolicy[R] { _ = "STUB: not implemented"; return nil }
+
+// TODO copy base fields
 
 type cachePolicy[R any] struct {
 	config[R]
 }
 
-func (c *cachePolicy[R]) ToExecutor(_ R) any {
-	ce := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{},
-		cachePolicy:  c,
-	}
-	ce.Executor = ce
-	return ce
-}
+func (c *cachePolicy[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

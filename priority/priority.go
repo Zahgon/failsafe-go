@@ -2,8 +2,6 @@ package priority
 
 import (
 	"context"
-	"math"
-	"math/rand"
 	"sync"
 )
 
@@ -21,29 +19,21 @@ const (
 const totalLevels = 500
 
 // RandomLevel returns a random level for the Priority.
-func (p Priority) RandomLevel() int {
-	r := priorityLevelRanges[p]
-	return rand.Intn(r.upper-r.lower+1) + r.lower
-}
+func (p Priority) RandomLevel() int { _ = "STUB: not implemented"; return 0 }
 
 // AddTo returns the ctx with the priority added to it as a value with the PriorityKey.
 func (p Priority) AddTo(ctx context.Context) context.Context {
-	return ContextWithPriority(ctx, p)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // MaxLevel returns the max level for the priority.
-func (p Priority) MaxLevel() int {
-	return p.levelRange().upper
-}
+func (p Priority) MaxLevel() int { _ = "STUB: not implemented"; return 0 }
 
 // MinLevel returns the min level for the priority.
-func (p Priority) MinLevel() int {
-	return p.levelRange().lower
-}
+func (p Priority) MinLevel() int { _ = "STUB: not implemented"; return 0 }
 
-func (p Priority) levelRange() levelRange {
-	return priorityLevelRanges[p]
-}
+func (p Priority) levelRange() levelRange { _ = "STUB: not implemented"; return *new(levelRange) }
 
 // levelRange provides a wider range of levels that allow for rejecting a subset of executions within a Priority.
 type levelRange struct {
@@ -68,39 +58,22 @@ const LevelKey key = 1
 
 // ContextWithPriority returns a context with the priority value stored with the PriorityKey.
 func ContextWithPriority(ctx context.Context, priority Priority) context.Context {
-	return context.WithValue(ctx, PriorityKey, priority)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // ContextWithLevel returns a context with the level value stored with the LevelKey.
 func ContextWithLevel(ctx context.Context, level int) context.Context {
-	return context.WithValue(ctx, LevelKey, level)
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // FromContext returns the priority from the context, else -1.
-func FromContext(ctx context.Context) Priority {
-	if untypedPriority := ctx.Value(PriorityKey); untypedPriority != nil {
-		if priority, ok := untypedPriority.(Priority); ok {
-			return priority
-		}
-	}
-	return -1
-}
+func FromContext(ctx context.Context) Priority { _ = "STUB: not implemented"; return *new(Priority) }
 
 // LevelFromContext returns a level for the level contained within the given context, else if a priority is contained
 // within the context, a random level is generated within that priority, else -1 is returned.
-func LevelFromContext(ctx context.Context) int {
-	if untypedLevel := ctx.Value(LevelKey); untypedLevel != nil {
-		if level, ok := untypedLevel.(int); ok {
-			return level
-		}
-	}
-	if untypedPriority := ctx.Value(PriorityKey); untypedPriority != nil {
-		if priority, ok := untypedPriority.(Priority); ok {
-			return priority.RandomLevel()
-		}
-	}
-	return -1
-}
+func LevelFromContext(ctx context.Context) int { _ = "STUB: not implemented"; return 0 }
 
 // LevelTracker tracks priority levels for executions, which can be used to prioritize rejections.
 type LevelTracker interface {
@@ -122,59 +95,20 @@ type windowedLevelTracker struct {
 
 // NewLevelTracker creates a LevelTracker that stores the last windowSize recorded levels.
 func NewLevelTracker(windowSize int) LevelTracker {
-	return &windowedLevelTracker{
-		window:      make([]int, windowSize),
-		levelCounts: make([]int, totalLevels),
-	}
+	_ = "STUB: not implemented"
+	return *new(LevelTracker)
 }
 
-func (lt *windowedLevelTracker) RecordLevel(level int) {
-	lt.mu.Lock()
-	defer lt.mu.Unlock()
+func (lt *windowedLevelTracker) RecordLevel(level int) { _ = "STUB: not implemented"; return }
 
-	// Remove old value from counts
-	if lt.filled {
-		oldLevel := lt.window[lt.head]
-		lt.levelCounts[oldLevel]--
-	}
+// Remove old value from counts
 
-	// Add new value to counts
-	lt.window[lt.head] = level
-	lt.levelCounts[level]++
+// Add new value to counts
 
-	// Advance head
-	lt.head++
-	if lt.head >= len(lt.window) {
-		lt.head = 0
-		lt.filled = true
-	}
-}
+// Advance head
 
-func (lt *windowedLevelTracker) GetLevel(quantile float64) int {
-	lt.mu.Lock()
-	defer lt.mu.Unlock()
+func (lt *windowedLevelTracker) GetLevel(quantile float64) int { _ = "STUB: not implemented"; return 0 }
 
-	currentSize := len(lt.window)
-	if !lt.filled {
-		currentSize = lt.head
-	}
+// Determine how many recorded levels we need to find to match the quantile
 
-	if currentSize > 0 {
-		// Determine how many recorded levels we need to find to match the quantile
-		targetLevels := int(math.Ceil(float64(currentSize) * quantile))
-		if targetLevels < 1 {
-			targetLevels = 1
-		}
-
-		// Count the levels until we hit the desired quantile
-		countedLevels := 0
-		for level := 0; level < totalLevels; level++ {
-			countedLevels += lt.levelCounts[level]
-			if countedLevels >= targetLevels {
-				return level
-			}
-		}
-	}
-
-	return 0
-}
+// Count the levels until we hit the desired quantile

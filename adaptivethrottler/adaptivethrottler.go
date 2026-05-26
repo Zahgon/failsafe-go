@@ -2,12 +2,10 @@ package adaptivethrottler
 
 import (
 	"errors"
-	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/failsafe-go/failsafe-go"
-	"github.com/failsafe-go/failsafe-go/internal"
 	"github.com/failsafe-go/failsafe-go/internal/util"
 	"github.com/failsafe-go/failsafe-go/policy"
 	"github.com/failsafe-go/failsafe-go/priority"
@@ -93,79 +91,48 @@ var _ Builder[any] = &config[any]{}
 
 // NewWithDefaults returns a new AdaptiveThrottler with a failureRateThreshold of .1, a thresholdingPeriod of 1 minute,
 // and a maxRejectionRate of .9. To configure additional options on am AdaptiveThrottler, use NewBuilder() instead.
-func NewWithDefaults[R any]() AdaptiveThrottler[R] {
-	return NewBuilder[R]().Build()
-}
+func NewWithDefaults[R any]() AdaptiveThrottler[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder returns an AdaptiveThrottler builder that defaults to a failureRateThreshold of .1, a thresholdingPeriod of 1 minute,
 // and a maxRejectionRate of .9.
-func NewBuilder[R any]() Builder[R] {
-	return &config[R]{
-		BaseFailurePolicy:    &policy.BaseFailurePolicy[R]{},
-		maxRejectionRate:     .9,
-		successRateThreshold: .9,
-		thresholdingPeriod:   time.Minute,
-	}
-}
+func NewBuilder[R any]() Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleErrors(errs ...error) Builder[R] {
-	c.BaseFailurePolicy.HandleErrors(errs...)
-	return c
-}
+func (c *config[R]) HandleErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] {
-	c.BaseFailurePolicy.HandleErrorTypes(errs...)
-	return c
-}
+func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleResult(result R) Builder[R] {
-	c.BaseFailurePolicy.HandleResult(result)
-	return c
-}
+func (c *config[R]) HandleResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) HandleIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseFailurePolicy.HandleIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnSuccess(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnSuccess(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFailure(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnFailure(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithFailureRateThreshold(failureRateThreshold float64, executionThreshold uint, thresholdingPeriod time.Duration) Builder[R] {
-	util.Assert(failureRateThreshold >= 0 && failureRateThreshold <= 1, "failureRateThreshold must be between 0 and 1")
-	c.successRateThreshold = min(1, max(0, 1-failureRateThreshold))
-	c.executionThreshold = executionThreshold
-	c.thresholdingPeriod = thresholdingPeriod
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxRejectionRate(maxRejectionRate float64) Builder[R] {
-	util.Assert(maxRejectionRate >= 0 && maxRejectionRate <= 1, "maxRejectionFactor must be between 0 and 1")
-	c.maxRejectionRate = maxRejectionRate
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() AdaptiveThrottler[R] {
-	return &adaptiveThrottler[R]{
-		config:         *c,
-		ExecutionStats: util.NewTimedStats(20, c.thresholdingPeriod, util.WallClock),
-	}
-}
+func (c *config[R]) Build() AdaptiveThrottler[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) BuildPrioritized(p priority.Prioritizer) PriorityThrottler[R] {
-	throttler := &priorityThrottler[R]{
-		adaptiveThrottler: c.Build().(*adaptiveThrottler[R]),
-		prioritizer:       p.(*internal.BasePrioritizer[*throttlerStats]),
-	}
-	throttler.prioritizer.Register(throttler.getThrottlerStats)
-	return throttler
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type adaptiveThrottler[R any] struct {
@@ -177,94 +144,36 @@ type adaptiveThrottler[R any] struct {
 	rejectionRate float64
 }
 
-func (*adaptiveThrottler[R]) ResultAgnostic() {}
+func (*adaptiveThrottler[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
-func (t *adaptiveThrottler[R]) AcquirePermit() error {
-	t.mu.Lock()
-	defer t.mu.Unlock()
+func (t *adaptiveThrottler[R]) AcquirePermit() error { _ = "STUB: not implemented"; return nil }
 
-	t.rejectionRate = computeRejectionRate(
-		float64(t.ExecutionCount()),
-		float64(t.SuccessCount()),
-		t.successRateThreshold,
-		t.maxRejectionRate,
-		t.executionThreshold)
+// Check for successful acquisition
 
-	// Check for successful acquisition
-	if t.rejectionRate == 0 {
-		return nil
-	}
-	if t.rejectionRate >= 1 || t.rejectionRate >= rand.Float64() {
-		return ErrExceeded
-	}
-	return nil
-}
+func (t *adaptiveThrottler[R]) TryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
-func (t *adaptiveThrottler[R]) TryAcquirePermit() bool {
-	return t.AcquirePermit() == nil
-}
+func (t *adaptiveThrottler[R]) RejectionRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (t *adaptiveThrottler[R]) RejectionRate() float64 {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	return t.rejectionRate
-}
+func (t *adaptiveThrottler[R]) RecordFailure() { _ = "STUB: not implemented"; return }
 
-func (t *adaptiveThrottler[R]) RecordFailure() {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.ExecutionStats.RecordFailure()
-}
+func (t *adaptiveThrottler[R]) RecordError(err error) { _ = "STUB: not implemented"; return }
 
-func (t *adaptiveThrottler[R]) RecordError(err error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.recordResult(*new(R), err)
-}
+func (t *adaptiveThrottler[R]) RecordResult(result R) { _ = "STUB: not implemented"; return }
 
-func (t *adaptiveThrottler[R]) RecordResult(result R) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.recordResult(result, nil)
-}
-
-func (t *adaptiveThrottler[R]) RecordSuccess() {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.ExecutionStats.RecordSuccess()
-}
+func (t *adaptiveThrottler[R]) RecordSuccess() { _ = "STUB: not implemented"; return }
 
 // Requires external locking.
-func (t *adaptiveThrottler[R]) recordResult(result R, err error) {
-	if t.IsFailure(result, err) {
-		t.ExecutionStats.RecordFailure()
-	} else {
-		t.ExecutionStats.RecordSuccess()
-	}
-}
+func (t *adaptiveThrottler[R]) recordResult(result R, err error) { _ = "STUB: not implemented"; return }
 
-func (t *adaptiveThrottler[R]) ToExecutor(_ R) any {
-	ate := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{
-			BaseFailurePolicy: t.BaseFailurePolicy,
-		},
-		adaptiveThrottler: t,
-	}
-	ate.Executor = ate
-	return ate
-}
+func (t *adaptiveThrottler[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 // Computes a rejection rate as described in the SRE book: https://sre.google/sre-book/handling-overload/#client-side-throttling-a7sYUg
 // The rejection rate ramps up rejections once the success rate falls below a threshold.
 func computeRejectionRate(executions, successes, successRateThreshold, maxRejectionRate float64, executionThreshold uint) float64 {
-	if uint(executions) < executionThreshold {
-		return 0
-	}
-
-	// The max number of executions we should receive, given the successes and expected success rate threshold
-	maxAllowedExecutions := successes / successRateThreshold
-	// How many extra executions we processed beyond the max allowed
-	excessExecutions := max(0, executions-maxAllowedExecutions)
-	rejectionRate := excessExecutions / (executions + executionPadding)
-	return min(rejectionRate, maxRejectionRate)
+	_ = "STUB: not implemented"
+	return 0
 }
+
+// The max number of executions we should receive, given the successes and expected success rate threshold
+
+// How many extra executions we processed beyond the max allowed

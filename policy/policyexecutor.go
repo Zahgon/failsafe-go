@@ -42,52 +42,31 @@ type BaseExecutor[R any] struct {
 var _ Executor[any] = &BaseExecutor[any]{}
 
 func (e *BaseExecutor[R]) PreExecute(_ ExecutionInternal[R]) *common.PolicyResult[R] {
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (e *BaseExecutor[R]) Apply(innerFn func(failsafe.Execution[R]) *common.PolicyResult[R]) func(failsafe.Execution[R]) *common.PolicyResult[R] {
-	return func(exec failsafe.Execution[R]) *common.PolicyResult[R] {
-		execInternal := exec.(ExecutionInternal[R])
-		result := e.Executor.PreExecute(execInternal)
-		if result != nil {
-			return result
-		}
-
-		result = innerFn(exec)
-		return e.Executor.PostExecute(execInternal, result)
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *BaseExecutor[R]) PostExecute(exec ExecutionInternal[R], er *common.PolicyResult[R]) *common.PolicyResult[R] {
-	if e.Executor.IsFailure(er.Result, er.Error) {
-		er = e.Executor.OnFailure(exec, er.WithFailure())
-	} else {
-		er = er.WithDone(true, true)
-		e.Executor.OnSuccess(exec, er)
-	}
-	return er
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *BaseExecutor[R]) IsFailure(result R, err error) bool {
-	if e.BaseFailurePolicy != nil {
-		return e.BaseFailurePolicy.IsFailure(result, err)
-	}
-	return err != nil
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (e *BaseExecutor[R]) OnSuccess(exec ExecutionInternal[R], result *common.PolicyResult[R]) {
-	if e.BaseFailurePolicy != nil && e.onSuccess != nil {
-		e.onSuccess(failsafe.ExecutionEvent[R]{
-			ExecutionAttempt: exec.CopyWithResult(result),
-		})
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func (e *BaseExecutor[R]) OnFailure(exec ExecutionInternal[R], result *common.PolicyResult[R]) *common.PolicyResult[R] {
-	if e.BaseFailurePolicy != nil && e.onFailure != nil {
-		e.onFailure(failsafe.ExecutionEvent[R]{
-			ExecutionAttempt: exec.CopyWithResult(result),
-		})
-	}
-	return result
+	_ = "STUB: not implemented"
+	return nil
 }

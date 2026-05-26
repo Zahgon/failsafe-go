@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/failsafe-go/failsafe-go"
-	"github.com/failsafe-go/failsafe-go/policy"
 )
 
 // ErrFull is returned when an execution is attempted against a Bulkhead that is full.
@@ -65,101 +64,48 @@ type config[R any] struct {
 var _ Builder[any] = &config[any]{}
 
 // New returns a new Bulkhead for execution result type R and the maxConcurrency.
-func New[R any](maxConcurrency uint) Bulkhead[R] {
-	return NewBuilder[R](maxConcurrency).Build()
-}
+func New[R any](maxConcurrency uint) Bulkhead[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder returns a Builder for execution result type R which builds Timeouts for the timeoutDelay.
-func NewBuilder[R any](maxConcurrency uint) Builder[R] {
-	return &config[R]{
-		maxConcurrency: maxConcurrency,
-	}
-}
+func NewBuilder[R any](maxConcurrency uint) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) WithMaxWaitTime(maxWaitTime time.Duration) Builder[R] {
-	c.maxWaitTime = maxWaitTime
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFull(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onFull = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() Bulkhead[R] {
-	return &bulkhead[R]{
-		config:    *c, // TODO copy base fields
-		semaphore: make(chan struct{}, c.maxConcurrency),
-	}
-}
+func (c *config[R]) Build() Bulkhead[R] { _ = "STUB: not implemented"; return nil }
+
+// TODO copy base fields
 
 type bulkhead[R any] struct {
 	config[R]
 	semaphore chan struct{}
 }
 
-func (*bulkhead[R]) ResultAgnostic() {}
+func (*bulkhead[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
 func (b *bulkhead[R]) AcquirePermit(ctx context.Context) error {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case b.semaphore <- struct{}{}:
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (b *bulkhead[R]) AcquirePermitWithMaxWait(ctx context.Context, maxWaitTime time.Duration) error {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-
-	// Initial attempt, in case permit is immediately available or context is done, so we don't race with a timer
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case b.semaphore <- struct{}{}:
-		return nil
-	default:
-		if maxWaitTime == 0 {
-			return ErrFull
-		}
-	}
-
-	// Second attempt with timer
-	timer := time.NewTimer(maxWaitTime)
-	defer timer.Stop()
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case b.semaphore <- struct{}{}:
-		return nil
-	case <-timer.C:
-		return ErrFull
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (b *bulkhead[R]) TryAcquirePermit() bool {
-	select {
-	case b.semaphore <- struct{}{}:
-		return true
-	default:
-		return false
-	}
-}
+// Initial attempt, in case permit is immediately available or context is done, so we don't race with a timer
 
-func (b *bulkhead[R]) ReleasePermit() {
-	<-b.semaphore
-}
+// Second attempt with timer
 
-func (b *bulkhead[R]) ToExecutor(_ R) any {
-	be := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{},
-		bulkhead:     b,
-	}
-	be.Executor = be
-	return be
-}
+func (b *bulkhead[R]) TryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
+
+func (b *bulkhead[R]) ReleasePermit() { _ = "STUB: not implemented"; return }
+
+func (b *bulkhead[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

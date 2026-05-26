@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/failsafe-go/failsafe-go"
-	"github.com/failsafe-go/failsafe-go/internal/util"
-	"github.com/failsafe-go/failsafe-go/policy"
 )
 
 // ErrExceeded is returned when an execution exceeds a configured rate limit.
@@ -155,7 +153,8 @@ every 10 millis. The returned RateLimiter will have a max wait time of 0.
 Executions are performed with no delay until they exceed the max rate, after which they are rejected.
 */
 func NewSmooth[R any](maxExecutions uint, period time.Duration) RateLimiter[R] {
-	return NewSmoothBuilder[R](maxExecutions, period).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 /*
@@ -166,7 +165,8 @@ every 10 milliseconds. The returned RateLimiter will have a max wait time of 0.
 Executions are performed with no delay until they exceed the max rate, after which they are rejected.
 */
 func NewSmoothWithMaxRate[R any](maxRate time.Duration) RateLimiter[R] {
-	return NewSmoothBuilderWithMaxRate[R](maxRate).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 /*
@@ -181,9 +181,8 @@ Executions are performed with no delay until they exceed the max rate, after whi
 will block and wait until the max wait time is exceeded.
 */
 func NewSmoothBuilder[R any](maxExecutions uint, period time.Duration) Builder[R] {
-	return &config[R]{
-		interval: period / time.Duration(maxExecutions),
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 /*
@@ -197,9 +196,8 @@ Executions are performed with no delay until they exceed the maxRate, after whic
 and wait until the max wait time is exceeded.
 */
 func NewSmoothBuilderWithMaxRate[R any](maxRate time.Duration) Builder[R] {
-	return &config[R]{
-		interval: maxRate,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 /*
@@ -210,7 +208,8 @@ RateLimiter will have a max wait time of 0.
 Executions are performed with no delay until they exceed the max rate, after which they are rejected.
 */
 func NewBursty[R any](maxExecutions uint, period time.Duration) RateLimiter[R] {
-	return NewBurstyBuilder[R](maxExecutions, period).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 /*
@@ -223,125 +222,78 @@ Executions are performed with no delay up until the maxExecutions are reached fo
 executions are either rejected or will block and wait until the max wait time is exceeded.
 */
 func NewBurstyBuilder[R any](maxExecutions uint, period time.Duration) Builder[R] {
-	return &config[R]{
-		periodPermits: int(maxExecutions),
-		period:        period,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxWaitTime(maxWaitTime time.Duration) Builder[R] {
-	c.maxWaitTime = maxWaitTime
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnRateLimitExceeded(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onRateLimitExceeded = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() RateLimiter[R] {
-	result := &rateLimiter[R]{
-		config: *c, // TODO copy base fields
-	}
+func (c *config[R]) Build() RateLimiter[R] { _ = "STUB: not implemented"; return nil }
 
-	if c.interval != 0 {
-		result.stats = &smoothStats[R]{
-			config:    &result.config,
-			stopwatch: util.NewStopwatch(),
-		}
-	} else {
-		result.stats = &burstyStats[R]{
-			config:           &result.config,
-			stopwatch:        util.NewStopwatch(),
-			availablePermits: c.periodPermits,
-		}
-	}
-
-	return result
-}
+// TODO copy base fields
 
 type rateLimiter[R any] struct {
 	config[R]
 	stats stats
 }
 
-func (*rateLimiter[R]) ResultAgnostic() {}
+func (*rateLimiter[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
 func (r *rateLimiter[R]) AcquirePermit(ctx context.Context) error {
-	return r.AcquirePermits(ctx, 1)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (r *rateLimiter[R]) AcquirePermits(ctx context.Context, permits uint) error {
-	waitTime := r.ReservePermits(permits)
-	if ctx != nil {
-		timer := time.NewTimer(waitTime)
-		select {
-		case <-timer.C:
-		case <-ctx.Done():
-			timer.Stop()
-			return ctx.Err()
-		}
-	} else {
-		time.Sleep(waitTime)
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (r *rateLimiter[R]) AcquirePermitWithMaxWait(ctx context.Context, maxWaitTime time.Duration) error {
-	return r.AcquirePermitsWithMaxWait(ctx, 1, maxWaitTime)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (r *rateLimiter[R]) AcquirePermitsWithMaxWait(ctx context.Context, requestedPermits uint, maxWaitTime time.Duration) error {
-	waitTime := r.stats.acquirePermits(int(requestedPermits), maxWaitTime)
-	if waitTime == -1 {
-		return ErrExceeded
-	}
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	timer := time.NewTimer(waitTime)
-	select {
-	case <-timer.C:
-	case <-ctx.Done():
-		timer.Stop()
-		return ctx.Err()
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (r *rateLimiter[R]) ReservePermit() time.Duration {
-	return r.ReservePermits(1)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
 func (r *rateLimiter[R]) ReservePermits(permits uint) time.Duration {
-	return r.stats.acquirePermits(int(permits), -1)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (r *rateLimiter[R]) TryAcquirePermit() bool {
-	return r.TryAcquirePermits(1)
-}
+func (r *rateLimiter[R]) TryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
 func (r *rateLimiter[R]) TryAcquirePermits(permits uint) bool {
-	return r.TryReservePermits(permits, 0) == 0
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (r *rateLimiter[R]) TryReservePermit(maxWaitTime time.Duration) time.Duration {
-	return r.TryReservePermits(1, maxWaitTime)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
 func (r *rateLimiter[R]) TryReservePermits(requestedPermits uint, maxWaitTime time.Duration) time.Duration {
-	return r.stats.acquirePermits(int(requestedPermits), maxWaitTime)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (r *rateLimiter[R]) ToExecutor(_ R) any {
-	rle := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{},
-		rateLimiter:  r,
-	}
-	rle.Executor = rle
-	return rle
-}
+func (r *rateLimiter[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
-func (r *rateLimiter[R]) Reset() {
-	r.stats.reset()
-}
+func (r *rateLimiter[R]) Reset() { _ = "STUB: not implemented"; return }

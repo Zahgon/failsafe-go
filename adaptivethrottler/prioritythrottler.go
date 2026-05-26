@@ -2,11 +2,9 @@ package adaptivethrottler
 
 import (
 	"context"
-	"math/rand"
 
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/internal"
-	"github.com/failsafe-go/failsafe-go/policy"
 	"github.com/failsafe-go/failsafe-go/priority"
 )
 
@@ -74,62 +72,44 @@ type priorityThrottler[R any] struct {
 	prioritizer *internal.BasePrioritizer[*throttlerStats]
 }
 
-func (*priorityThrottler[R]) ResultAgnostic() {}
+func (*priorityThrottler[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
 func (t *priorityThrottler[R]) AcquirePermit(ctx context.Context) error {
-	level := priority.LevelFromContext(ctx)
-	if level == -1 {
-		level = 0
-	}
-	return t.AcquirePermitWithLevel(level)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (t *priorityThrottler[R]) AcquirePermitWithPriority(priority priority.Priority) error {
-	return t.AcquirePermitWithLevel(priority.RandomLevel())
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (t *priorityThrottler[R]) AcquirePermitWithLevel(level int) error {
+	_ = "STUB: not implemented"
 	// Try to acquire through prioritizer
-	if level >= t.prioritizer.RejectionThreshold() {
-		t.prioritizer.LevelTracker.RecordLevel(level)
-		return nil
-	}
-
-	// Maintain min flow to prevent starvation
-	if rand.Float64() < 1.0-t.maxRejectionRate {
-		t.prioritizer.LevelTracker.RecordLevel(level)
-		return nil
-	}
-
-	return ErrExceeded
+	return nil
 }
 
+// Maintain min flow to prevent starvation
+
 func (t *priorityThrottler[R]) TryAcquirePermit(ctx context.Context) bool {
-	return t.AcquirePermit(ctx) == nil
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (t *priorityThrottler[R]) TryAcquirePermitWithPriority(priority priority.Priority) bool {
-	return t.AcquirePermitWithPriority(priority) == nil
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (t *priorityThrottler[R]) TryAcquirePermitWithLevel(level int) bool {
-	return t.AcquirePermitWithLevel(level) == nil
+	_ = "STUB: not implemented"
+	return false
 }
 
-func (t *priorityThrottler[R]) RejectionRate() float64 {
-	return t.prioritizer.RejectionRate()
-}
+func (t *priorityThrottler[R]) RejectionRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (t *priorityThrottler[R]) ToExecutor(_ R) any {
-	pte := &priorityExecutor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{
-			BaseFailurePolicy: t.BaseFailurePolicy,
-		},
-		priorityThrottler: t,
-	}
-	pte.Executor = pte
-	return pte
-}
+func (t *priorityThrottler[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 // Implements Stats for throttler statistics.
 type throttlerStats struct {
@@ -138,25 +118,16 @@ type throttlerStats struct {
 	maxRejectionRate float64
 }
 
-func (s *throttlerStats) ComputeRejectionRate() float64 {
-	return min(s.rejectionRate, s.maxRejectionRate)
-}
+func (s *throttlerStats) ComputeRejectionRate() float64 { _ = "STUB: not implemented"; return 0 }
 
 func (s *throttlerStats) DebugLogArgs() []any {
+	_ = "STUB: not implemented"
+
+	// Must be locked externally
 	return nil
 }
 
-// Must be locked externally
 func (t *priorityThrottler[R]) getThrottlerStats() *throttlerStats {
-	return &throttlerStats{
-		executions: float64(t.ExecutionCount()),
-		rejectionRate: computeRejectionRate(
-			float64(t.ExecutionCount()),
-			float64(t.SuccessCount()),
-			t.successRateThreshold,
-			t.maxRejectionRate,
-			t.executionThreshold,
-		),
-		maxRejectionRate: t.maxRejectionRate,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

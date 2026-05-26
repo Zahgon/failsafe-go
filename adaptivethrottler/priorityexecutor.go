@@ -2,7 +2,6 @@ package adaptivethrottler
 
 import (
 	"github.com/failsafe-go/failsafe-go/common"
-	"github.com/failsafe-go/failsafe-go/internal"
 	"github.com/failsafe-go/failsafe-go/policy"
 )
 
@@ -15,19 +14,16 @@ type priorityExecutor[R any] struct {
 var _ policy.Executor[any] = &priorityExecutor[any]{}
 
 func (e *priorityExecutor[R]) PreExecute(exec policy.ExecutionInternal[R]) *common.PolicyResult[R] {
-	if err := e.AcquirePermit(exec.Context()); err != nil {
-		return internal.FailureResult[R](err)
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (e *priorityExecutor[R]) OnSuccess(exec policy.ExecutionInternal[R], result *common.PolicyResult[R]) {
-	e.BaseExecutor.OnSuccess(exec, result)
-	e.RecordSuccess()
+	_ = "STUB: not implemented"
+	return
 }
 
 func (e *priorityExecutor[R]) OnFailure(exec policy.ExecutionInternal[R], result *common.PolicyResult[R]) *common.PolicyResult[R] {
-	e.BaseExecutor.OnFailure(exec, result)
-	e.RecordFailure()
-	return result
+	_ = "STUB: not implemented"
+	return nil
 }

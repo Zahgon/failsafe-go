@@ -29,37 +29,15 @@ type smoothStats[R any] struct {
 }
 
 func (s *smoothStats[R]) acquirePermits(requestedPermits int, maxWaitTime time.Duration) time.Duration {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	currentTime := s.stopwatch.ElapsedTime()
-	requestedPermitTime := s.interval * time.Duration(requestedPermits)
-	var newNextFreePermitTime time.Duration
-
-	// If a permit is currently available
-	if currentTime >= s.nextFreePermitTime {
-		// Time at the start of the current interval
-		currentIntervalTime := util.RoundDown(currentTime, s.interval)
-		newNextFreePermitTime = currentIntervalTime + requestedPermitTime
-	} else {
-		newNextFreePermitTime = s.nextFreePermitTime + requestedPermitTime
-	}
-
-	waitTime := max(newNextFreePermitTime-currentTime-s.interval, time.Duration(0))
-	if exceedsMaxWaitTime(waitTime, maxWaitTime) {
-		return -1
-	}
-
-	s.nextFreePermitTime = newNextFreePermitTime
-	return waitTime
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (s *smoothStats[R]) reset() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.stopwatch.Reset()
-	s.nextFreePermitTime = 0
-}
+// If a permit is currently available
+
+// Time at the start of the current interval
+
+func (s *smoothStats[R]) reset() { _ = "STUB: not implemented"; return }
 
 // A rate limiter implementation that allows bursts of executions, up to the max permits per period. This implementation
 // tracks the current period and available permits, which can go into a deficit. A deficit of available permits will
@@ -77,57 +55,20 @@ type burstyStats[R any] struct {
 }
 
 func (s *burstyStats[R]) acquirePermits(requestedPermits int, maxWaitTime time.Duration) time.Duration {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	currentTime := s.stopwatch.ElapsedTime()
-	newCurrentPeriod := int(currentTime / s.period)
-
-	// Update current period and available permits
-	if s.currentPeriod < newCurrentPeriod {
-		elapsedPeriods := newCurrentPeriod - s.currentPeriod
-		elapsedPermits := elapsedPeriods * s.periodPermits
-		s.currentPeriod = newCurrentPeriod
-		if s.availablePermits < 0 {
-			s.availablePermits += elapsedPermits
-		} else {
-			s.availablePermits = s.periodPermits
-		}
-	}
-
-	waitTime := 0 * time.Second
-	if requestedPermits > s.availablePermits {
-		nextPeriodTime := time.Duration(s.currentPeriod+1) * s.period
-		permitDeficit := requestedPermits - s.availablePermits
-		additionalPeriods := permitDeficit / s.periodPermits
-		additionalUnits := permitDeficit % s.periodPermits
-
-		// Do not wait for an additional period if we're not using any permits from it
-		if additionalUnits == 0 {
-			additionalPeriods -= 1
-		}
-
-		// The time to wait until the beginning of the next period that will have free permits
-		timeToNextPeriod := nextPeriodTime - currentTime
-		waitTime = timeToNextPeriod + (time.Duration(additionalPeriods) * s.period)
-		if exceedsMaxWaitTime(waitTime, maxWaitTime) {
-			return -1
-		}
-	}
-
-	s.availablePermits -= requestedPermits
-	return waitTime
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (s *burstyStats[R]) reset() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.stopwatch.Reset()
-	s.availablePermits = s.periodPermits
-	s.currentPeriod = 0
-}
+// Update current period and available permits
+
+// Do not wait for an additional period if we're not using any permits from it
+
+// The time to wait until the beginning of the next period that will have free permits
+
+func (s *burstyStats[R]) reset() { _ = "STUB: not implemented"; return }
 
 // exceedsMaxWaitTime returns whether the waitTime would exceed the maxWaitTime, else false if maxWaitTime is -1.
 func exceedsMaxWaitTime(waitTime time.Duration, maxWaitTime time.Duration) bool {
-	return maxWaitTime != -1 && waitTime > maxWaitTime
+	_ = "STUB: not implemented"
+	return false
 }

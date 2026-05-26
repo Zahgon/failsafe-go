@@ -8,18 +8,11 @@ type TestCache[R any] struct {
 	Cache map[string]R
 }
 
-func (c *TestCache[R]) Get(key string) (R, bool) {
-	result, found := c.Cache[key]
-	return result, found
-}
+func (c *TestCache[R]) Get(key string) (R, bool) { _ = "STUB: not implemented"; return *new(R), false }
 
-func (c *TestCache[R]) Set(key string, value R) {
-	c.Cache[key] = value
-}
+func (c *TestCache[R]) Set(key string, value R) { _ = "STUB: not implemented"; return }
 
 func NewCache[R any]() (map[string]R, cachepolicy.Cache[R]) {
-	cache := make(map[string]R)
-	return cache, &TestCache[R]{
-		Cache: cache,
-	}
+	_ = "STUB: not implemented"
+	return nil, nil
 }

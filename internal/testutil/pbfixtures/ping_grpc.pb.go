@@ -10,8 +10,6 @@ import (
 	"context"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -37,33 +35,18 @@ type pingServiceClient struct {
 }
 
 func NewPingServiceClient(cc grpc.ClientConnInterface) PingServiceClient {
-	return &pingServiceClient{cc}
+	_ = "STUB: not implemented"
+	return *new(PingServiceClient)
 }
 
 func (c *pingServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PingResponse)
-	err := c.cc.Invoke(ctx, PingService_Ping_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (c *pingServiceClient) PingStream(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (PingService_PingStreamClient, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &PingService_ServiceDesc.Streams[0], PingService_PingStream_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &pingServicePingStreamClient{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
+	_ = "STUB: not implemented"
+	return *new(PingService_PingStreamClient), nil
 }
 
 type PingService_PingStreamClient interface {
@@ -76,11 +59,8 @@ type pingServicePingStreamClient struct {
 }
 
 func (x *pingServicePingStreamClient) Recv() (*PingResponse, error) {
-	m := new(PingResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // PingServiceServer is the server API for PingService service.
@@ -97,48 +77,41 @@ type UnimplementedPingServiceServer struct {
 }
 
 func (UnimplementedPingServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+	_ = "STUB: not implemented"
+	return nil, nil
 }
-func (UnimplementedPingServiceServer) PingStream(*PingRequest, PingService_PingStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method PingStream not implemented")
-}
-func (UnimplementedPingServiceServer) mustEmbedUnimplementedPingServiceServer() {}
 
-// UnsafePingServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PingServiceServer will
-// result in compilation errors.
+func (UnimplementedPingServiceServer) PingStream(*PingRequest, PingService_PingStreamServer) error {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+func (UnimplementedPingServiceServer) mustEmbedUnimplementedPingServiceServer() {
+	_ = "STUB: not implemented"
+
+	// UnsafePingServiceServer may be embedded to opt out of forward compatibility for this service.
+	// Use of this interface is not recommended, as added methods to PingServiceServer will
+	// result in compilation errors.
+	return
+}
+
 type UnsafePingServiceServer interface {
 	mustEmbedUnimplementedPingServiceServer()
 }
 
 func RegisterPingServiceServer(s grpc.ServiceRegistrar, srv PingServiceServer) {
-	s.RegisterService(&PingService_ServiceDesc, srv)
+	_ = "STUB: not implemented"
+	return
 }
 
 func _PingService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PingServiceServer).Ping(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PingService_Ping_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PingServiceServer).Ping(ctx, req.(*PingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func _PingService_PingStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(PingRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(PingServiceServer).PingStream(m, &pingServicePingStreamServer{ServerStream: stream})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type PingService_PingStreamServer interface {
@@ -151,7 +124,8 @@ type pingServicePingStreamServer struct {
 }
 
 func (x *pingServicePingStreamServer) Send(m *PingResponse) error {
-	return x.ServerStream.SendMsg(m)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // PingService_ServiceDesc is the grpc.ServiceDesc for PingService service.

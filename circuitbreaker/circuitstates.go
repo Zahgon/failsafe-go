@@ -11,10 +11,8 @@ import (
 const defaultBucketCount = 10
 
 func newStats[R any](config *config[R], supportsTimeBased bool, capacity uint) util.ExecutionStats {
-	if supportsTimeBased && config.failureThresholdingPeriod != 0 {
-		return util.NewTimedStats(defaultBucketCount, config.failureThresholdingPeriod, config.clock)
-	}
-	return util.NewCountingStats(capacity)
+	_ = "STUB: not implemented"
+	return *new(util.ExecutionStats)
 }
 
 // State of a CircuitBreaker.
@@ -33,42 +31,31 @@ type closedState[R any] struct {
 }
 
 func newClosedState[R any](breaker *circuitBreaker[R]) *closedState[R] {
-	var capacity uint
-	if breaker.failureExecutionThreshold != 0 {
-		capacity = breaker.failureExecutionThreshold
-	} else {
-		capacity = breaker.failureThresholdingCapacity
-	}
-	return &closedState[R]{
-		breaker:        breaker,
-		ExecutionStats: newStats(&breaker.config, true, capacity),
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (s *closedState[R]) state() State {
-	return ClosedState
-}
+func (s *closedState[R]) state() State { _ = "STUB: not implemented"; return *new(State) }
 
 func (s *closedState[R]) remainingDelay() time.Duration {
-	return 0
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
 func (s *closedState[R]) tryAcquirePermit() bool {
-	return true
+	_ = "STUB: not implemented"
+
+	// Checks to see if the executions and failure thresholds have been exceeded, opening the circuit if so.
+	return false
 }
 
-// Checks to see if the executions and failure thresholds have been exceeded, opening the circuit if so.
 func (s *closedState[R]) checkThresholdAndReleasePermit(exec failsafe.Execution[R]) {
+	_ = "STUB: not implemented"
 	// Execution threshold can only be set for time based thresholding
-	if s.ExecutionCount() >= s.breaker.failureExecutionThreshold {
-		// Failure rate threshold can only be set for time based thresholding
-		failureRateThreshold := s.breaker.failureRateThreshold
-		if (failureRateThreshold != 0 && s.FailureRate() >= failureRateThreshold) ||
-			(failureRateThreshold == 0 && s.FailureCount() >= s.breaker.failureThreshold) {
-			s.breaker.open(exec)
-		}
-	}
+	return
 }
+
+// Failure rate threshold can only be set for time based thresholding
 
 type openState[R any] struct {
 	breaker *circuitBreaker[R]
@@ -78,32 +65,22 @@ type openState[R any] struct {
 }
 
 func newOpenState[R any](breaker *circuitBreaker[R], previousState circuitState[R], delay time.Duration) *openState[R] {
-	return &openState[R]{
-		breaker:        breaker,
-		ExecutionStats: previousState,
-		startTime:      breaker.clock.Now().UnixNano(),
-		delay:          delay,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (s *openState[R]) state() State {
-	return OpenState
-}
+func (s *openState[R]) state() State { _ = "STUB: not implemented"; return *new(State) }
 
 func (s *openState[R]) remainingDelay() time.Duration {
-	elapsedTime := s.breaker.clock.Now().UnixNano() - s.startTime
-	return max(0, s.delay-time.Duration(elapsedTime))
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (s *openState[R]) tryAcquirePermit() bool {
-	if s.breaker.clock.Now().UnixNano()-s.startTime >= s.delay.Nanoseconds() {
-		s.breaker.halfOpen()
-		return s.breaker.tryAcquirePermit()
-	}
-	return false
-}
+func (s *openState[R]) tryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
 func (s *openState[R]) checkThresholdAndReleasePermit(_ failsafe.Execution[R]) {
+	_ = "STUB: not implemented"
+	return
 }
 
 type halfOpenState[R any] struct {
@@ -113,35 +90,18 @@ type halfOpenState[R any] struct {
 }
 
 func newHalfOpenState[R any](breaker *circuitBreaker[R]) *halfOpenState[R] {
-	capacity := breaker.successThresholdingCapacity
-	if capacity == 0 {
-		capacity = breaker.failureExecutionThreshold
-	}
-	if capacity == 0 {
-		capacity = breaker.failureThresholdingCapacity
-	}
-	return &halfOpenState[R]{
-		breaker:             breaker,
-		ExecutionStats:      newStats[R](&breaker.config, false, capacity),
-		permittedExecutions: capacity,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (s *halfOpenState[R]) state() State {
-	return HalfOpenState
-}
+func (s *halfOpenState[R]) state() State { _ = "STUB: not implemented"; return *new(State) }
 
 func (s *halfOpenState[R]) remainingDelay() time.Duration {
-	return 0
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (s *halfOpenState[R]) tryAcquirePermit() bool {
-	if s.permittedExecutions > 0 {
-		s.permittedExecutions--
-		return true
-	}
-	return false
-}
+func (s *halfOpenState[R]) tryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
 /*
 Checks to determine if a threshold has been met and the circuit should be opened or closed.
@@ -151,34 +111,10 @@ Checks to determine if a threshold has been met and the circuit should be opened
 A permit is released before returning.
 */
 func (s *halfOpenState[R]) checkThresholdAndReleasePermit(exec failsafe.Execution[R]) {
-	var successesExceeded bool
-	var failuresExceeded bool
-
-	successThreshold := s.breaker.successThreshold
-	if successThreshold != 0 {
-		successThresholdingCapacity := s.breaker.successThresholdingCapacity
-		successesExceeded = s.SuccessCount() >= successThreshold
-		failuresExceeded = s.FailureCount() > successThresholdingCapacity-successThreshold
-	} else {
-		// Failure rate threshold can only be set for time based thresholding
-		failureRateThreshold := s.breaker.failureRateThreshold
-		if failureRateThreshold != 0 {
-			// Execution threshold can only be set for time based thresholding
-			executionThresholdExceeded := s.ExecutionCount() >= s.breaker.failureExecutionThreshold
-			failuresExceeded = executionThresholdExceeded && s.FailureRate() >= failureRateThreshold
-			successesExceeded = executionThresholdExceeded && s.SuccessRate() > 1-failureRateThreshold
-		} else {
-			failureThresholdingCapacity := s.breaker.failureThresholdingCapacity
-			failureThreshold := s.breaker.failureThreshold
-			failuresExceeded = s.FailureCount() >= failureThreshold
-			successesExceeded = s.SuccessCount() > failureThresholdingCapacity-failureThreshold
-		}
-	}
-
-	if successesExceeded {
-		s.breaker.close()
-	} else if failuresExceeded {
-		s.breaker.open(exec)
-	}
-	s.permittedExecutions++
+	_ = "STUB: not implemented"
+	return
 }
+
+// Failure rate threshold can only be set for time based thresholding
+
+// Execution threshold can only be set for time based thresholding

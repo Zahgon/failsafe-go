@@ -10,8 +10,6 @@ type MockPingServer struct {
 }
 
 func (m *MockPingServer) Ping(ctx context.Context, req *PingRequest) (*PingResponse, error) {
-	if m.OnPing != nil {
-		return m.OnPing(ctx, req)
-	}
-	return &PingResponse{Msg: "pong"}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

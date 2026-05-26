@@ -2,7 +2,6 @@ package retrypolicy
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/failsafe-go/failsafe-go"
@@ -25,34 +24,17 @@ type ExceededError struct {
 	LastError  error
 }
 
-func (e ExceededError) Error() string {
-	return fmt.Sprintf("retries exceeded. last result: %v, last error: %v", e.LastResult, e.LastError)
-}
+func (e ExceededError) Error() string { _ = "STUB: not implemented"; return "" }
 
-func (e ExceededError) Is(err error) bool {
-	return err == ErrExceeded
-}
+func (e ExceededError) Is(err error) bool { _ = "STUB: not implemented"; return false }
 
-func (e ExceededError) Unwrap() error {
-	if e.LastError != nil {
-		return e.LastError
-	}
-	return fmt.Errorf("failure: %v", e.LastResult)
-}
+func (e ExceededError) Unwrap() error { _ = "STUB: not implemented"; return nil }
 
 // IsExceededError returns whether the err is an ExceededError or ErrExceeded.
-func IsExceededError(err error) bool {
-	return errors.Is(err, ErrExceeded)
-}
+func IsExceededError(err error) bool { _ = "STUB: not implemented"; return false }
 
 // AsExceededError returns a *ExceededError if err is an ExceededError value, else nil.
-func AsExceededError(err error) *ExceededError {
-	var e ExceededError
-	if errors.As(err, &e) {
-		return &e
-	}
-	return nil
-}
+func AsExceededError(err error) *ExceededError { _ = "STUB: not implemented"; return nil }
 
 // RetryPolicy is a policy that defines when retries should be performed. See Builder for configuration options.
 //
@@ -195,182 +177,132 @@ type retryPolicy[R any] struct {
 
 // NewWithDefaults creates a RetryPolicy for execution result type R that allows 3 execution attempts max with no delay. To
 // configure additional options on a RetryPolicy, use NewBuilder instead.
-func NewWithDefaults[R any]() RetryPolicy[R] {
-	return NewBuilder[R]().Build()
-}
+func NewWithDefaults[R any]() RetryPolicy[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder creates a Builder for execution result type R, which by default will build a RetryPolicy that
 // allows 3 execution attempts max with no delay, unless configured otherwise.
-func NewBuilder[R any]() Builder[R] {
-	return &config[R]{
-		BaseFailurePolicy:   policy.BaseFailurePolicy[R]{},
-		BaseDelayablePolicy: policy.BaseDelayablePolicy[R]{},
-		BaseAbortablePolicy: policy.BaseAbortablePolicy[R]{},
-		maxRetries:          defaultMaxRetries,
-	}
-}
+func NewBuilder[R any]() Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) AbortOnResult(result R) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnResult(result)
-	return c
-}
+func (c *config[R]) AbortOnResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) AbortOnErrors(errs ...error) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnErrors(errs...)
-	return c
-}
+func (c *config[R]) AbortOnErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) AbortOnErrorTypes(errs ...any) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnErrorTypes(errs...)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) AbortIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseAbortablePolicy.AbortIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) HandleErrors(errs ...error) Builder[R] {
-	c.BaseFailurePolicy.HandleErrors(errs...)
-	return c
-}
+func (c *config[R]) HandleErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] {
-	c.BaseFailurePolicy.HandleErrorTypes(errs...)
-	return c
-}
+func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleResult(result R) Builder[R] {
-	c.BaseFailurePolicy.HandleResult(result)
-	return c
-}
+func (c *config[R]) HandleResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) HandleIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseFailurePolicy.HandleIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) ReturnLastFailure() Builder[R] {
-	c.returnLastFailure = true
-	return c
-}
+func (c *config[R]) ReturnLastFailure() Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) WithMaxAttempts(maxAttempts int) Builder[R] {
-	if maxAttempts == -1 {
-		c.maxRetries = -1
-	} else {
-		c.maxRetries = maxAttempts - 1
-	}
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxRetries(maxRetries int) Builder[R] {
-	c.maxRetries = maxRetries
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxDuration(maxDuration time.Duration) Builder[R] {
-	c.maxDuration = maxDuration
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithDelay(delay time.Duration) Builder[R] {
-	c.BaseDelayablePolicy.WithDelay(delay)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithDelayFunc(delayFunc failsafe.DelayFunc[R]) Builder[R] {
-	c.BaseDelayablePolicy.WithDelayFunc(delayFunc)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithBackoff(delay time.Duration, maxDelay time.Duration) Builder[R] {
-	return c.WithBackoffFactor(delay, maxDelay, 2)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithBackoffFactor(delay time.Duration, maxDelay time.Duration, delayFactor float64) Builder[R] {
-	c.BaseDelayablePolicy.WithDelay(delay)
-	c.maxDelay = maxDelay
-	c.delayFactor = delayFactor
-
-	// Clear random delay
-	c.delayMin = 0
-	c.delayMax = 0
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// Clear random delay
 
 func (c *config[R]) WithRandomDelay(delayMin time.Duration, delayMax time.Duration) Builder[R] {
-	c.delayMin = delayMin
-	c.delayMax = delayMax
-
-	// Clear non-random delay
-	c.Delay = 0
-	c.maxDelay = 0
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
+// Clear non-random delay
+
 func (c *config[R]) WithJitter(jitter time.Duration) Builder[R] {
-	c.jitter = jitter
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithJitterFactor(jitterFactor float64) Builder[R] {
-	c.jitterFactor = jitterFactor
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithBudget(retryBudget budget.Budget) Builder[R] {
-	c.budget = retryBudget.(internal.Budget)
-	return c.AbortOnErrors(budget.ErrExceeded)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnSuccess(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnSuccess(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFailure(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnFailure(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnAbort(listener func(failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onAbort = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnRetry(listener func(failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onRetry = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnRetryScheduled(listener func(failsafe.ExecutionScheduledEvent[R])) Builder[R] {
-	c.onRetryScheduled = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnRetriesExceeded(listener func(failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onRetriesExceeded = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) allowsRetries() bool {
-	return c.maxRetries == -1 || c.maxRetries > 0
-}
+func (c *config[R]) allowsRetries() bool { _ = "STUB: not implemented"; return false }
 
-func (c *config[R]) Build() RetryPolicy[R] {
-	return &retryPolicy[R]{
-		config: *c, // TODO copy base fields
-	}
-}
+func (c *config[R]) Build() RetryPolicy[R] { _ = "STUB: not implemented"; return nil }
 
-func (rp *retryPolicy[R]) ToExecutor(_ R) any {
-	rpe := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{
-			BaseFailurePolicy: &rp.BaseFailurePolicy,
-		},
-		retryPolicy: rp,
-	}
-	rpe.Executor = rpe
-	return rpe
-}
+// TODO copy base fields
+
+func (rp *retryPolicy[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

@@ -2,10 +2,8 @@ package testutil
 
 import (
 	"context"
-	"reflect"
 	"sync/atomic"
 	"time"
-	"unsafe"
 )
 
 var CanceledContextFn = func() context.Context {
@@ -14,116 +12,58 @@ var CanceledContextFn = func() context.Context {
 	return ctx
 }
 
-func ContextFn(ctx context.Context) func() context.Context {
-	return func() context.Context {
-		return ctx
-	}
-}
+func ContextFn(ctx context.Context) func() context.Context { _ = "STUB: not implemented"; return nil }
 
 // ContextWithCancel returns a function that provides a context that is canceled after the sleepTime.
 func ContextWithCancel(sleepTime time.Duration) func() context.Context {
-	return func() context.Context {
-		ctx, cancel := context.WithCancel(context.Background())
-		go func() {
-			time.Sleep(sleepTime)
-			cancel()
-		}()
-		return ctx
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type TestClock struct {
 	Time time.Time
 }
 
-func NewTestClock(millis int) *TestClock {
-	result := &TestClock{}
-	result.SetTime(millis)
-	return result
-}
+func NewTestClock(millis int) *TestClock { _ = "STUB: not implemented"; return nil }
 
-func (tc *TestClock) SetTime(millis int) {
-	tc.Time = time.Unix(0, 0).Add(time.Duration(millis) * time.Millisecond)
-}
+func (tc *TestClock) SetTime(millis int) { _ = "STUB: not implemented"; return }
 
-func (tc *TestClock) Now() time.Time {
-	return tc.Time
-}
+func (tc *TestClock) Now() time.Time { _ = "STUB: not implemented"; return *new(time.Time) }
 
 type TestStopwatch struct {
 	CurrentTime int64
 }
 
 func (t *TestStopwatch) ElapsedTime() time.Duration {
-	return time.Duration(t.CurrentTime)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (t *TestStopwatch) Reset() {
-	t.CurrentTime = 0
-}
+func (t *TestStopwatch) Reset() { _ = "STUB: not implemented"; return }
 
-func Timed(fn func()) time.Duration {
-	startTime := time.Now()
-	fn()
-	return time.Since(startTime)
-}
+func Timed(fn func()) time.Duration { _ = "STUB: not implemented"; return *new(time.Duration) }
 
 type Waiter struct {
 	count atomic.Int32
 	done  chan struct{}
 }
 
-func NewWaiter() *Waiter {
-	return &Waiter{
-		done: make(chan struct{}, 10),
-	}
-}
+func NewWaiter() *Waiter { _ = "STUB: not implemented"; return nil }
 
-func (w *Waiter) Await(expectedResumes int) {
-	w.AwaitWithTimeout(expectedResumes, 0)
-}
+func (w *Waiter) Await(expectedResumes int) { _ = "STUB: not implemented"; return }
 
 func (w *Waiter) AwaitWithTimeout(expectedResumes int, timeout time.Duration) {
-	remainingResumes := w.count.Add(int32(expectedResumes))
-	if remainingResumes != 0 {
-		timer := time.NewTimer(timeout)
-		select {
-		case <-timer.C:
-			panic("Timed out while waiting for a resume")
-		case <-w.done:
-			timer.Stop()
-			return
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func (w *Waiter) Resume() {
-	remainingResumes := w.count.Add(int32(-1))
-	if remainingResumes == 0 {
-		w.done <- struct{}{}
-	}
-}
+func (w *Waiter) Resume() { _ = "STUB: not implemented"; return }
 
-func MillisToNanos(millis int) int64 {
-	return (time.Duration(millis) * time.Millisecond).Nanoseconds()
-}
+func MillisToNanos(millis int) int64 { _ = "STUB: not implemented"; return 0 }
 
 func GetPrioritizerRejectionThreshold(prioritizer any) *atomic.Int32 {
-	val := reflect.ValueOf(prioritizer).Elem()
-	field := val.FieldByName("RejectionThresh")
-	if !field.IsValid() {
-		panic("Failed to reflect RejectionThresh")
-	}
-	ptr := unsafe.Pointer(field.UnsafeAddr())
-	return (*atomic.Int32)(ptr)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func GetBudgetExecutions(budget any) *atomic.Int32 {
-	val := reflect.ValueOf(budget).Elem()
-	field := val.FieldByName("executions")
-	if !field.IsValid() {
-		panic("Failed to reflect Budget executions")
-	}
-	ptr := unsafe.Pointer(field.UnsafeAddr())
-	return (*atomic.Int32)(ptr)
-}
+func GetBudgetExecutions(budget any) *atomic.Int32 { _ = "STUB: not implemented"; return nil }

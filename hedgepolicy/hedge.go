@@ -82,9 +82,7 @@ var _ Builder[any] = &config[any]{}
 //
 // If the execution is configured with a Context, a child context will be created for the execution and canceled when the
 // HedgePolicy is exceeded.
-func NewWithDelay[R any](delay time.Duration) HedgePolicy[R] {
-	return NewBuilderWithDelay[R](delay).Build()
-}
+func NewWithDelay[R any](delay time.Duration) HedgePolicy[R] { _ = "STUB: not implemented"; return nil }
 
 // NewWithDelayFunc returns a new HedgePolicy for execution result type R and the delayFunc, which by default will allow a
 // single hedged execution to be performed, after the delayFunc result is elapsed, if the original execution is not done
@@ -93,7 +91,8 @@ func NewWithDelay[R any](delay time.Duration) HedgePolicy[R] {
 // If the execution is configured with a Context, a child context will be created for the execution and canceled when the
 // HedgePolicy is exceeded.
 func NewWithDelayFunc[R any](delayFunc failsafe.DelayFunc[R]) HedgePolicy[R] {
-	return NewBuilderWithDelayFunc[R](delayFunc).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // NewBuilderWithDelay returns a new Builder for execution result type R and the delay, which by default will
@@ -103,9 +102,8 @@ func NewWithDelayFunc[R any](delayFunc failsafe.DelayFunc[R]) HedgePolicy[R] {
 // If the execution is configured with a Context, a child context will be created for the execution and canceled when the
 // HedgePolicy is exceeded.
 func NewBuilderWithDelay[R any](delay time.Duration) Builder[R] {
-	return NewBuilderWithDelayFunc[R](func(exec failsafe.ExecutionAttempt[R]) time.Duration {
-		return delay
-	})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // NewBuilderWithDelayFunc returns a new Builder for execution result type R and the delayFunc, which by default will
@@ -116,11 +114,8 @@ func NewBuilderWithDelay[R any](delay time.Duration) Builder[R] {
 // If the execution is configured with a Context, a child context will be created for the execution and canceled when
 // the HedgePolicy is exceeded.
 func NewBuilderWithDelayFunc[R any](delayFunc failsafe.DelayFunc[R]) Builder[R] {
-	return &config[R]{
-		BaseAbortablePolicy: policy.BaseAbortablePolicy[R]{},
-		delayFunc:           delayFunc,
-		maxHedges:           1,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // NewWithDelayQuantile returns a new HedgePolicy for execution result type R that automatically determines the hedge
@@ -132,7 +127,8 @@ func NewBuilderWithDelayFunc[R any](delayFunc failsafe.DelayFunc[R]) Builder[R] 
 //
 // Panics if quantile is not > 0 and < 1, or if quantileAge or executionThreshold are 0.
 func NewWithDelayQuantile[R any](quantile float64, quantileAge uint, executionThreshold uint) HedgePolicy[R] {
-	return NewBuilderWithDelayQuantile[R](quantile, quantileAge, executionThreshold).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // NewBuilderWithDelayQuantile returns a new Builder for execution result type R that automatically determines the hedge
@@ -144,83 +140,43 @@ func NewWithDelayQuantile[R any](quantile float64, quantileAge uint, executionTh
 //
 // Panics if quantile is not > 0 and < 1, or if quantileAge or executionThreshold are 0.
 func NewBuilderWithDelayQuantile[R any](quantile float64, quantileAge uint, executionThreshold uint) Builder[R] {
-	util.Assert(quantile > 0 && quantile < 1, "quantile must be between 0 and 1 exclusive")
-	util.Assert(quantileAge > 0, "quantileAge must be > 0")
-	util.Assert(executionThreshold > 0, "executionThreshold must be > 0")
-	return &config[R]{
-		BaseAbortablePolicy: policy.BaseAbortablePolicy[R]{},
-		maxHedges:           1,
-		quantileValue:       quantile,
-		quantileAge:         quantileAge,
-		executionThreshold:  executionThreshold,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) CancelOnResult(result R) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnResult(result)
-	return c
-}
+func (c *config[R]) CancelOnResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) CancelOnErrors(errs ...error) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnErrors(errs...)
-	return c
-}
+func (c *config[R]) CancelOnErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) CancelOnErrorTypes(errs ...any) Builder[R] {
-	c.BaseAbortablePolicy.AbortOnErrorTypes(errs...)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) CancelIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseAbortablePolicy.AbortIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) WithMaxHedges(maxHedges int) Builder[R] {
-	c.maxHedges = maxHedges
-	return c
-}
+func (c *config[R]) WithMaxHedges(maxHedges int) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) WithBudget(hedgeBudget budget.Budget) Builder[R] {
-	c.budget = hedgeBudget.(internal.Budget)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnHedge(listener func(failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onHedge = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() HedgePolicy[R] {
-	cCopy := *c
-	if !cCopy.BaseAbortablePolicy.IsConfigured() {
-		// Cancel hedges by default after any result is received
-		cCopy.AbortIf(func(r R, err error) bool {
-			return true
-		})
-	}
+func (c *config[R]) Build() HedgePolicy[R] { _ = "STUB: not implemented"; return nil }
 
-	// Initialize quantile-based delay
-	if cCopy.quantileValue != 0 {
-		mu := &sync.RWMutex{}
-		mq := util.NewMovingQuantile(cCopy.quantileValue, 0.01, cCopy.quantileAge)
-		cCopy.mu = mu
-		cCopy.quantile = &mq
-		executionThreshold := cCopy.executionThreshold
-		cCopy.delayFunc = func(exec failsafe.ExecutionAttempt[R]) time.Duration {
-			mu.RLock()
-			defer mu.RUnlock()
-			if mq.Count() < int(executionThreshold) {
-				return -1
-			}
-			return time.Duration(mq.Value())
-		}
-	}
+// Cancel hedges by default after any result is received
 
-	return &hedgePolicy[R]{
-		config: cCopy, // TODO copy base fields
-	}
-}
+// Initialize quantile-based delay
+
+// TODO copy base fields
 
 type hedgePolicy[R any] struct {
 	config[R]
@@ -228,11 +184,4 @@ type hedgePolicy[R any] struct {
 
 var _ HedgePolicy[any] = &hedgePolicy[any]{}
 
-func (h *hedgePolicy[R]) ToExecutor(_ R) any {
-	he := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{},
-		hedgePolicy:  h,
-	}
-	he.Executor = he
-	return he
-}
+func (h *hedgePolicy[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

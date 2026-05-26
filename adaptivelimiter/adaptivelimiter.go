@@ -3,19 +3,14 @@ package adaptivelimiter
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log/slog"
-	"math"
 	"sync"
 	"time"
 
 	"github.com/influxdata/tdigest"
 
-	"github.com/failsafe-go/failsafe-go/internal"
-
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/internal/util"
-	"github.com/failsafe-go/failsafe-go/policy"
 	"github.com/failsafe-go/failsafe-go/priority"
 )
 
@@ -36,8 +31,8 @@ const (
 )
 
 // AdaptiveLimiter is an adaptive concurrency limiter that adjusts its limit up or down based on execution time trends:
-//  - When recent execution times are trending up relative to baseline execution times, the concurrency limit is decreased.
-//  - When recent execution times are trending down relative to baseline execution times, the concurrency limit is increased.
+//   - When recent execution times are trending up relative to baseline execution times, the concurrency limit is decreased.
+//   - When recent execution times are trending down relative to baseline execution times, the concurrency limit is increased.
 //
 // To accomplish this, recent execution times are tracked and regularly compared to a weighted moving average of
 // baseline execution times. Limit increases are additionally controlled to ensure they don't increase execution times.
@@ -269,154 +264,91 @@ var _ Builder[any] = &config[any]{}
 // The recent window's min and max durations are 1 and 30 seconds respectively, and the min samples is 50.
 // The baseline window age is 10 and the correlation window size is 50.
 // To configure additional options on an AdaptiveLimiter, use NewBuilder() instead.
-func NewWithDefaults[R any]() AdaptiveLimiter[R] {
-	return NewBuilder[R]().Build()
-}
+func NewWithDefaults[R any]() AdaptiveLimiter[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder creates a Builder for execution result type R.
 // The min, max, and initial limits default to 1, 200, and 20 respectively, and the maxLimitFactor to 5.
 // The recent window's min and max durations default to 1 and 30 seconds respectively, and the min samples to 50.
 // The baseline window age defaults to 10 and the correlation window size to 50.
-func NewBuilder[R any]() Builder[R] {
-	return &config[R]{
-		minLimit:            1,
-		maxLimit:            200,
-		initialLimit:        20,
-		maxLimitFactor:      5.0,
-		maxLimitFactorDecay: 0.0,
-
-		recentWindowMinDuration: time.Second,
-		recentWindowMaxDuration: 30 * time.Second,
-		recentWindowMinSamples:  50,
-		recentQuantile:          0.9,
-		baselineWindowAge:       10,
-		correlationWindowSize:   50,
-	}
-}
+func NewBuilder[R any]() Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) WithLimits(minLimit uint, maxLimit uint, initialLimit uint) Builder[R] {
-	util.Assert(minLimit <= maxLimit, "minLimit must be <= maxLimit")
-	util.Assert(minLimit <= initialLimit && initialLimit <= maxLimit, "initialLimit must be between minLimit and maxLimit")
-	c.minLimit = float64(max(1, minLimit))
-	c.maxLimit = float64(maxLimit)
-	c.initialLimit = initialLimit
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxLimitFactor(maxLimitFactor float64) Builder[R] {
-	util.Assert(maxLimitFactor >= 1, "maxLimitFactor must be >= 1")
-	c.maxLimitFactor = maxLimitFactor
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxLimitFactorDecay(maxLimitFactorDecay, minLimitFactor float64) Builder[R] {
-	util.Assert(maxLimitFactorDecay >= 0, "maxLimitFactorDecay must be >= 0")
-	util.Assert(minLimitFactor >= 1, "minLimitFactor must be >= 1")
-	c.maxLimitFactorDecay = maxLimitFactorDecay
-	c.minLimitFactor = minLimitFactor
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxLimitFunc(maxLimitFunc func(inflight int) float64) Builder[R] {
-	c.maxLimitFunc = maxLimitFunc
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxLimitStabilizationWindow(window time.Duration) Builder[R] {
-	util.Assert(window >= 0, "maxLimitStabilizationWindow must be >= 0")
-	c.maxLimitStabilizationWindow = window
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithRecentWindow(minDuration time.Duration, maxDuration time.Duration, minSamples uint) Builder[R] {
-	util.Assert(minDuration <= maxDuration, "minDuration must be <= maxDuration")
-	c.recentWindowMinDuration = minDuration
-	c.recentWindowMaxDuration = maxDuration
-	c.recentWindowMinSamples = minSamples
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithRecentQuantile(quantile float64) Builder[R] {
-	util.Assert(quantile > 0 && quantile < 1, "recentQuantile must be between 0 and 1 exclusive")
-	c.recentQuantile = quantile
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithBaselineWindow(baselineAge uint) Builder[R] {
-	c.baselineWindowAge = baselineAge
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithCorrelationWindow(size uint) Builder[R] {
-	c.correlationWindowSize = size
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithQueueing(initialRejectionFactor, maxRejectionFactor float64) Builder[R] {
-	util.Assert(initialRejectionFactor >= 1, "initialRejectionFactor must be >= 1")
-	util.Assert(maxRejectionFactor >= 1, "maxRejectionFactor must be >= 1")
-	util.Assert(initialRejectionFactor <= maxRejectionFactor, "initialRejectionFactor must be <= maxRejectionFactor")
-	c.initialRejectionFactor = initialRejectionFactor
-	c.maxRejectionFactor = maxRejectionFactor
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithMaxWaitTime(maxWaitTime time.Duration) Builder[R] {
-	c.maxWaitTime = maxWaitTime
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithLogger(logger *slog.Logger) Builder[R] {
-	c.logger = logger
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnLimitExceeded(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.onLimitExceeded = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnLimitChanged(listener func(event LimitChangedEvent)) Builder[R] {
-	c.onLimitChanged = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() AdaptiveLimiter[R] {
-	limiter := &adaptiveLimiter[R]{
-		config:                *c,
-		semaphore:             util.NewDynamicSemaphore(int(c.initialLimit)),
-		limit:                 float64(c.initialLimit),
-		recentRTT:             tdigestSample{TDigest: tdigest.NewWithCompression(100)},
-		medianFilter:          util.NewMovingMedian(smoothedSamples),
-		smoothedRecentRTT:     util.NewMovingAverage(smoothedSamples, warmupSamples),
-		baselineRTT:           util.NewMovingAverage(c.baselineWindowAge, warmupSamples),
-		nextUpdateTime:        time.Now(),
-		rttCorrelation:        util.NewCorrelationWindow(c.correlationWindowSize, warmupSamples),
-		throughputCorrelation: util.NewCorrelationWindow(c.correlationWindowSize, warmupSamples),
-	}
-	if c.maxLimitStabilizationWindow != 0 {
-		limiter.maxInflightWindow = util.NewMaxWindow(c.maxLimitStabilizationWindow)
-	}
-	if c.initialRejectionFactor != 0 && c.maxRejectionFactor != 0 {
-		if c.maxWaitTime == 0 {
-			limiter.config.maxWaitTime = -1 // Wait indefinitely for queued executions
-		}
-		return &queueingLimiter[R]{adaptiveLimiter: limiter}
-	}
-	return limiter
-}
+func (c *config[R]) Build() AdaptiveLimiter[R] { _ = "STUB: not implemented"; return nil }
+
+// Wait indefinitely for queued executions
 
 func (c *config[R]) BuildPrioritized(p priority.Prioritizer) PriorityLimiter[R] {
-	if c.initialRejectionFactor == 0 && c.maxRejectionFactor == 0 {
-		c.initialRejectionFactor = 2
-		c.maxRejectionFactor = 3
-	}
-	limiter := &priorityLimiter[R]{
-		queueingLimiter: c.Build().(*queueingLimiter[R]),
-		prioritizer:     p.(*internal.BasePrioritizer[*queueStats]),
-	}
-	limiter.prioritizer.Register(limiter.getQueueStats)
-	return limiter
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type limitChange int
@@ -434,24 +366,9 @@ type tdigestSample struct {
 	*tdigest.TDigest
 }
 
-func (td *tdigestSample) Add(rtt time.Duration, inflight int) {
-	if td.Size == 0 {
-		td.MinRTT = rtt
-		td.MaxInflight = inflight
-	} else {
-		td.MinRTT = min(td.MinRTT, rtt)
-		td.MaxInflight = max(td.MaxInflight, inflight)
-	}
-	td.Size++
-	td.TDigest.Add(float64(rtt), 1)
-}
+func (td *tdigestSample) Add(rtt time.Duration, inflight int) { _ = "STUB: not implemented"; return }
 
-func (td *tdigestSample) Reset() {
-	td.TDigest.Reset()
-	td.MinRTT = 0
-	td.MaxInflight = 0
-	td.Size = 0
-}
+func (td *tdigestSample) Reset() { _ = "STUB: not implemented"; return }
 
 type adaptiveLimiter[R any] struct {
 	config[R]
@@ -467,271 +384,116 @@ type adaptiveLimiter[R any] struct {
 	lastMaxInflight       int            // The max inflight requests for the last sampling period
 	medianFilter          util.MovingMedian
 	smoothedRecentRTT     util.MovingAverage
-	baselineRTT           util.MovingAverage              // Tracks baseline execution time
+	baselineRTT           util.MovingAverage     // Tracks baseline execution time
 	nextUpdateTime        time.Time              // Tracks when the limit can next be updated
 	throughputCorrelation util.CorrelationWindow // Tracks the correlation between concurrency and throughput
 	rttCorrelation        util.CorrelationWindow // Tracks the correlation between concurrency and round trip times (RTT)
 }
 
-func (*adaptiveLimiter[R]) ResultAgnostic() {}
+func (*adaptiveLimiter[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
 func (l *adaptiveLimiter[R]) AcquirePermit(ctx context.Context) (Permit, error) {
-	if err := l.semaphore.Acquire(ctx); err != nil {
-		return nil, err
-	}
-	return l.newPermit(), nil
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
 func (l *adaptiveLimiter[R]) AcquirePermitWithMaxWait(ctx context.Context, maxWaitTime time.Duration) (Permit, error) {
-	if err := l.semaphore.AcquireWithMaxWait(ctx, maxWaitTime); err != nil {
-		if errors.Is(err, util.ErrWaitExceeded) {
-			err = ErrExceeded
-		}
-		return nil, err
-	}
-	return l.newPermit(), nil
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
 func (l *adaptiveLimiter[R]) TryAcquirePermit() (Permit, bool) {
-	if !l.semaphore.TryAcquire() {
-		return nil, false
-	}
-	return l.newPermit(), true
+	_ = "STUB: not implemented"
+	return *new(Permit), false
 }
 
-func (l *adaptiveLimiter[R]) newPermit() Permit {
-	return &recordingPermit[R]{
-		clock:           util.WallClock,
-		limiter:         l,
-		startTime:       time.Now(),
-		currentInflight: l.semaphore.Used(),
-	}
-}
+func (l *adaptiveLimiter[R]) newPermit() Permit { _ = "STUB: not implemented"; return *new(Permit) }
 
-func (l *adaptiveLimiter[R]) CanAcquirePermit() bool {
-	return !l.semaphore.IsFull()
-}
+func (l *adaptiveLimiter[R]) CanAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
-func (l *adaptiveLimiter[R]) Limit() int {
-	l.mu.RLock()
-	defer l.mu.RUnlock()
-	return int(l.limit)
-}
+func (l *adaptiveLimiter[R]) Limit() int { _ = "STUB: not implemented"; return 0 }
 
-func (l *adaptiveLimiter[R]) Inflight() int {
-	return l.semaphore.Used()
-}
+func (l *adaptiveLimiter[R]) Inflight() int { _ = "STUB: not implemented"; return 0 }
 
-func (l *adaptiveLimiter[R]) MaxInflight() int {
-	l.mu.RLock()
-	defer l.mu.RUnlock()
-	return l.lastMaxInflight
-}
+func (l *adaptiveLimiter[R]) MaxInflight() int { _ = "STUB: not implemented"; return 0 }
 
-func (l *adaptiveLimiter[R]) Queued() int {
-	return l.semaphore.Waiters()
-}
+func (l *adaptiveLimiter[R]) Queued() int { _ = "STUB: not implemented"; return 0 }
 
-func (l *adaptiveLimiter[R]) Reset() {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.semaphore.SetSize(int(l.config.initialLimit))
-	l.limit = float64(l.config.initialLimit)
-	l.maxInflightWindow.Reset()
-	l.recentRTT.Reset()
-	l.medianFilter.Reset()
-	l.smoothedRecentRTT.Reset()
-	l.baselineRTT.Reset()
-	l.nextUpdateTime = time.Now()
-	l.rttCorrelation.Reset()
-	l.throughputCorrelation.Reset()
-}
+func (l *adaptiveLimiter[R]) Reset() { _ = "STUB: not implemented"; return }
 
 // Records the duration of a completed execution, updating the concurrency limit if the recentRTT window is full.
 func (l *adaptiveLimiter[R]) record(now time.Time, rtt time.Duration, inflight int, dropped bool) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	if !dropped {
-		l.recentRTT.Add(rtt, inflight)
-	}
-
-	if now.After(l.nextUpdateTime) && l.recentRTT.Size >= l.recentWindowMinSamples {
-		quantile := l.recentRTT.Quantile(l.recentQuantile)
-		filteredRTT := l.medianFilter.Add(quantile)
-		smoothedRTT := l.smoothedRecentRTT.Add(filteredRTT)
-		l.lastMaxInflight = l.recentRTT.MaxInflight
-		l.updateLimit(smoothedRTT, l.recentRTT.MaxInflight, now)
-		minRTT := l.recentRTT.MinRTT
-		l.recentRTT.Reset()
-		minWindowTime := max(minRTT*2, l.recentWindowMinDuration)
-		l.nextUpdateTime = now.Add(min(minWindowTime, l.recentWindowMaxDuration))
-	}
-
-	l.semaphore.Release()
+	_ = "STUB: not implemented"
+	return
 }
 
 // updateLimit updates the concurrency limit based on the gradient between the recentRTT and historical baselineRTT.
 // A stability check prevents unnecessary decreases during steady state.
 // A correlation adjustment prevents upward drift during overload.
 func (l *adaptiveLimiter[R]) updateLimit(recentRTT float64, inflight int, now time.Time) {
+	_ = "STUB: not implemented"
 	// Update baseline RTT and calculate the queue size
 	// This is the primary signal that we threshold off of to detect overload
-	baselineRTT := l.baselineRTT.Add(recentRTT)
-	gradient := baselineRTT / recentRTT
-	queueSize := int(math.Ceil(l.limit * (1 - gradient)))
-
-	// Calculate throughput correlation, throughput CV, and RTT correlation
-	// These are the secondary signals that we threshold off of to detect overload
-	throughput := float64(inflight) / (recentRTT / 1e9) // Convert to RPS
-	throughputCorr, _, throughputCV := l.throughputCorrelation.Add(float64(inflight), throughput)
-	rttCorr, _, _ := l.rttCorrelation.Add(float64(inflight), recentRTT)
-
-	// Additional values for thresholding the limit
-	overloaded := l.semaphore.IsFull()
-	alpha := alphaFunc(int(l.limit)) // alpha is the queueSize threshold below which we increase
-	beta := betaFunc(int(l.limit))   // beta is the queueSize threshold above which we decrease
-
-	change, reason := computeChange(queueSize, alpha, beta, overloaded, throughputCorr, throughputCV, rttCorr)
-
-	oldLimit := l.limit
-	newLimit := oldLimit
-	var direction string
-	switch change {
-	case decrease:
-		direction = "decrease"
-		newLimit = oldLimit - float64(decreaseFunc(int(oldLimit)))
-	case increase:
-		direction = "increase"
-		newLimit = oldLimit + float64(increaseFunc(int(oldLimit)))
-	default:
-		direction = "hold"
-	}
-
-	// Get the max inflight over the stabilization window
-	maxInflight := inflight
-	if l.maxInflightWindow.Configured() {
-		maxInflight = l.maxInflightWindow.Add(inflight, now)
-	}
-
-	maxLimit := l.computeMaxLimit(maxInflight)
-	if newLimit > maxLimit {
-		if oldLimit > maxLimit {
-			direction = "decrease"
-			newLimit = oldLimit - float64(decreaseFunc(int(oldLimit))) // Decrease gradually to avoid noise if inflights fluctuate
-		} else if oldLimit < maxLimit {
-			direction = "increase"
-			newLimit = maxLimit
-		} else {
-			direction = "hold"
-			newLimit = maxLimit
-		}
-		reason = "max"
-	}
-
-	// Clamp the limit based on absolute min and max
-	if newLimit > l.maxLimit {
-		if oldLimit == l.maxLimit {
-			direction = "hold"
-			reason = "max"
-		}
-		newLimit = l.maxLimit
-	} else if newLimit < l.minLimit {
-		if oldLimit == l.minLimit {
-			direction = "hold"
-			reason = "min"
-		}
-		newLimit = l.minLimit
-	}
-
-	l.logLimit(direction, reason, newLimit, gradient, queueSize, inflight, recentRTT, baselineRTT, rttCorr, throughput, throughputCorr, throughputCV)
-
-	if uint(oldLimit) != uint(newLimit) && l.onLimitChanged != nil {
-		l.mu.Unlock()
-		l.onLimitChanged(LimitChangedEvent{
-			OldLimit: uint(oldLimit),
-			NewLimit: uint(newLimit),
-		})
-		l.mu.Lock()
-	}
-
-	l.semaphore.SetSize(int(newLimit))
-	l.limit = newLimit
+	return
 }
+
+// Calculate throughput correlation, throughput CV, and RTT correlation
+// These are the secondary signals that we threshold off of to detect overload
+// Convert to RPS
+
+// Additional values for thresholding the limit
+
+// alpha is the queueSize threshold below which we increase
+// beta is the queueSize threshold above which we decrease
+
+// Get the max inflight over the stabilization window
+
+// Decrease gradually to avoid noise if inflights fluctuate
+
+// Clamp the limit based on absolute min and max
 
 func computeChange(queueSize, alpha, beta int, overloaded bool, throughputCorr, throughputCV, rttCorr float64) (change limitChange, reason string) {
-	if queueSize > beta {
-		// This condition handles severe overload where recent RTT significantly exceeds the baseline
-		return decrease, "queue"
-	} else if overloaded && throughputCorr < 0 {
-		// This condition prevents runaway limit increases during moderate overload where inflight is increasing but throughput is decreasing
-		return decrease, "thrptCorr"
-	} else if overloaded && throughputCorr < .3 && rttCorr > .5 {
-		// This condition prevents runaway limit increases during moderate overload where throughputCorr is weak and rttCorr is high
-		// This indicates overload since latency is increasing with inflight, but throughput is not
-		return decrease, "thrptCorrRtt"
-	} else if overloaded && throughputCV < .2 && rttCorr > .5 {
-		// This condition prevents runaway limit increases during moderate overload where throughputCV low and rttCorr is high
-		// This indicates overload since latency is increasing with inflight, but throughput is not
-		return decrease, "thrptCV"
-	} else if queueSize < alpha {
-		// If our queue size is sufficiently small, increase until we detect overload
-		return increase, "queue"
-	} else {
-		// If queueSize is between alpha and beta, leave the limit unchanged
-		return hold, "queue"
-	}
+	_ = "STUB: not implemented"
+	return *
+
+	// This condition handles severe overload where recent RTT significantly exceeds the baseline
+	new(limitChange), ""
 }
 
+// This condition prevents runaway limit increases during moderate overload where inflight is increasing but throughput is decreasing
+
+// This condition prevents runaway limit increases during moderate overload where throughputCorr is weak and rttCorr is high
+// This indicates overload since latency is increasing with inflight, but throughput is not
+
+// This condition prevents runaway limit increases during moderate overload where throughputCV low and rttCorr is high
+// This indicates overload since latency is increasing with inflight, but throughput is not
+
+// If our queue size is sufficiently small, increase until we detect overload
+
+// If queueSize is between alpha and beta, leave the limit unchanged
+
 func (l *adaptiveLimiter[R]) logLimit(direction, reason string, limit float64, gradient float64, queueSize, inflight int, recentRTT, baselineRTT, rttCorr, throughput, throughputCorr, throughputCV float64) {
-	if l.logger != nil && l.logger.Enabled(nil, slog.LevelDebug) {
-		l.logger.Debug("limit update",
-			"direction", direction,
-			"reason", reason,
-			"inflight", inflight,
-			"limit", fmt.Sprintf("%.2f", limit),
-			"gradient", fmt.Sprintf("%.2f", gradient),
-			"queueSize", fmt.Sprintf("%d", queueSize),
-			"recentRTT", time.Duration(recentRTT).Round(time.Microsecond),
-			"baselineRTT", time.Duration(baselineRTT).Round(time.Microsecond),
-			"thrpt", fmt.Sprintf("%.2f", throughput),
-			"thrptCorr", fmt.Sprintf("%.2f", throughputCorr),
-			"thrptCV", fmt.Sprintf("%.2f", throughputCV),
-			"rttCorr", fmt.Sprintf("%.2f", rttCorr))
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 // computeMaxLimit computes the max limit using a provided function, else based on max limit factor, with optional
 // logarithmic decay.
 func (l *adaptiveLimiter[R]) computeMaxLimit(inflight int) float64 {
-	if l.maxLimitFunc != nil {
-		return l.maxLimitFunc(inflight)
-	}
-
-	effectiveFactor := l.maxLimitFactor
-	if l.maxLimitFactorDecay > 0 && inflight > 0 {
-		// Apply logarithmic decay, where the factor decreases by the decay amount for each order of magnitude increase in inflights
-		effectiveFactor = l.maxLimitFactor - (l.maxLimitFactorDecay * math.Log10(float64(inflight)))
-		effectiveFactor = max(effectiveFactor, l.minLimitFactor)
-	}
-	return float64(inflight) * effectiveFactor
+	_ = "STUB: not implemented"
+	return 0
 }
 
-func (l *adaptiveLimiter[R]) ToExecutor(_ R) any {
-	e := &executor[R]{
-		BaseExecutor:    policy.BaseExecutor[R]{},
-		blockingLimiter: l,
-	}
-	e.Executor = e
-	return e
-}
+// Apply logarithmic decay, where the factor decreases by the decay amount for each order of magnitude increase in inflights
+
+func (l *adaptiveLimiter[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 func (l *adaptiveLimiter[R]) canAcquirePermit(_ context.Context) bool {
-	return l.CanAcquirePermit()
+	_ = "STUB: not implemented"
+	return false
 }
 
-func (l *adaptiveLimiter[R]) configRef() *config[R] {
-	return &l.config
-}
+func (l *adaptiveLimiter[R]) configRef() *config[R] { _ = "STUB: not implemented"; return nil }
 
 type recordingPermit[R any] struct {
 	clock           util.Clock
@@ -742,31 +504,11 @@ type recordingPermit[R any] struct {
 	usageTracker    priority.UsageTracker
 }
 
-func (p *recordingPermit[R]) Record() {
-	if p.userID != "" && p.usageTracker != nil {
-		p.RecordUsage(p.userID, -1)
-		return
-	}
-
-	now := p.clock.Now()
-	p.limiter.record(now, now.Sub(p.startTime), p.currentInflight, false)
-}
+func (p *recordingPermit[R]) Record() { _ = "STUB: not implemented"; return }
 
 func (p *recordingPermit[R]) RecordUsage(userID string, usage int64) {
-	now := p.clock.Now()
-	duration := now.Sub(p.startTime)
-
-	if userID != "" && p.usageTracker != nil {
-		if usage == -1 {
-			usage = duration.Nanoseconds()
-		}
-		p.usageTracker.RecordUsage(userID, usage)
-	}
-
-	p.limiter.record(now, duration, p.currentInflight, false)
+	_ = "STUB: not implemented"
+	return
 }
 
-func (p *recordingPermit[R]) Drop() {
-	now := p.clock.Now()
-	p.limiter.record(now, now.Sub(p.startTime), p.currentInflight, true)
-}
+func (p *recordingPermit[R]) Drop() { _ = "STUB: not implemented"; return }

@@ -1,7 +1,5 @@
 package util
 
-import "math"
-
 // MovingQuantile estimates a streaming quantile using the Windowless Moving Percentile algorithm (Martin Jambon).
 // This provides O(1) time and space quantile estimation that adapts to distribution changes.
 //
@@ -22,56 +20,32 @@ type MovingQuantile struct {
 // how far back in time the estimate effectively "remembers" - smaller ages adapt faster to recent changes, while larger
 // ages provide more stability by retaining influence from older samples.
 func NewMovingQuantile(quantile float64, r float64, age uint) MovingQuantile {
-	return MovingQuantile{
-		quantile: quantile,
-		r:        r,
-		alpha:    2 / (float64(age) + 1),
-	}
+	_ = "STUB: not implemented"
+	return *new(MovingQuantile)
 }
 
 // Add adds a sample and returns the updated quantile estimate.
-func (q *MovingQuantile) Add(sample float64) float64 {
-	q.count++
-	if q.count == 1 {
-		q.value = sample
-		q.mean = sample
-		return q.value
-	}
+func (q *MovingQuantile) Add(sample float64) float64 { _ = "STUB: not implemented"; return 0 }
 
-	// Update EMA mean and variance
-	oldMean := q.mean
-	q.mean = Smooth(q.mean, sample, q.alpha)
-	q.variance = Smooth(q.variance, (sample-oldMean)*(sample-q.mean), q.alpha)
+// Update EMA mean and variance
 
-	// Compute step size
-	delta := math.Sqrt(q.variance) * q.r
-	if delta == 0 {
-		return q.value
-	}
+// Compute step size
 
-	// Adjust estimate
-	if sample < q.value {
-		q.value -= delta / q.quantile
-	} else if sample > q.value {
-		q.value += delta / (1 - q.quantile)
-	}
-	return q.value
-}
+// Adjust estimate
 
 // Value returns the current quantile estimate.
 func (q *MovingQuantile) Value() float64 {
-	return q.value
+	_ = "STUB: not implemented"
+
+	// Count returns the number of samples added.
+	return 0
 }
 
-// Count returns the number of samples added.
 func (q *MovingQuantile) Count() int {
-	return q.count
+	_ = "STUB: not implemented"
+
+	// Reset resets the quantile estimate.
+	return 0
 }
 
-// Reset resets the quantile estimate.
-func (q *MovingQuantile) Reset() {
-	q.value = 0
-	q.mean = 0
-	q.variance = 0
-	q.count = 0
-}
+func (q *MovingQuantile) Reset() { _ = "STUB: not implemented"; return }

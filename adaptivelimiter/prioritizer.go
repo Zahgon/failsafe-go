@@ -7,16 +7,14 @@ import (
 
 // NewPrioritizer returns a new Prioritizer.
 func NewPrioritizer() priority.Prioritizer {
-	return NewPrioritizerBuilder().Build()
+	_ = "STUB: not implemented"
+	return *new(priority.Prioritizer)
 }
 
 // NewPrioritizerBuilder returns a new PrioritizerBuilder.
 func NewPrioritizerBuilder() PrioritizerBuilder {
-	return &prioritizerConfig{
-		BasePrioritizerConfig: &internal.BasePrioritizerConfig[*queueStats]{
-			Strategy: &queueRejectionStrategy{},
-		},
-	}
+	_ = "STUB: not implemented"
+	return *new(PrioritizerBuilder)
 }
 
 // PrioritizerBuilder builds Prioritizer instances.
@@ -36,21 +34,14 @@ type prioritizerConfig struct {
 }
 
 func (c *prioritizerConfig) WithUsageTracker(usageTracker priority.UsageTracker) PrioritizerBuilder {
-	c.UsageTracker = usageTracker
-	return c
+	_ = "STUB: not implemented"
+	return *new(PrioritizerBuilder)
 }
 
 // Implements priority.RejectionStrategy.
 type queueRejectionStrategy struct{}
 
 func (s *queueRejectionStrategy) CombineStats(statsFuncs []func() *queueStats) *queueStats {
-	var result queueStats
-	for _, statsFn := range statsFuncs {
-		stats := statsFn()
-		result.limit += stats.limit
-		result.queued += stats.queued
-		result.rejectionThreshold += stats.rejectionThreshold
-		result.maxQueue += stats.maxQueue
-	}
-	return &result
+	_ = "STUB: not implemented"
+	return nil
 }

@@ -43,97 +43,64 @@ type config[R any] struct {
 var _ Builder[any] = &config[any]{}
 
 // NewWithResult returns a Fallback for execution result type R that returns the result when an execution fails.
-func NewWithResult[R any](result R) Fallback[R] {
-	return NewBuilderWithResult[R](result).Build()
-}
+func NewWithResult[R any](result R) Fallback[R] { _ = "STUB: not implemented"; return nil }
 
 // NewWithError returns a Fallback for execution result type R that returns the err when an execution fails.
-func NewWithError[R any](err error) Fallback[R] {
-	return NewBuilderWithError[R](err).Build()
-}
+func NewWithError[R any](err error) Fallback[R] { _ = "STUB: not implemented"; return nil }
 
 // NewWithFunc returns a Fallback for execution result type R that uses fallbackFunc to handle a failed execution.
 func NewWithFunc[R any](fallbackFunc func(exec failsafe.Execution[R]) (R, error)) Fallback[R] {
-	return NewBuilderWithFunc(fallbackFunc).Build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // NewBuilderWithResult returns a Builder for execution result type R which builds Fallbacks that return the result
 // when an execution fails.
-func NewBuilderWithResult[R any](result R) Builder[R] {
-	return NewBuilderWithFunc(func(exec failsafe.Execution[R]) (R, error) {
-		return result, nil
-	})
-}
+func NewBuilderWithResult[R any](result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilderWithError returns a Builder for execution result type R which builds Fallbacks that return the error
 // when an execution fails.
-func NewBuilderWithError[R any](err error) Builder[R] {
-	return NewBuilderWithFunc(func(exec failsafe.Execution[R]) (R, error) {
-		return *new(R), err
-	})
-}
+func NewBuilderWithError[R any](err error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilderWithFunc returns a Builder for execution result type R which builds Fallbacks that use the fallbackFn to
 // handle failed executions.
 func NewBuilderWithFunc[R any](fallbackFunc func(exec failsafe.Execution[R]) (R, error)) Builder[R] {
-	return &config[R]{
-		BaseFailurePolicy: &policy.BaseFailurePolicy[R]{},
-		fn:                fallbackFunc,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) HandleErrors(errs ...error) Builder[R] {
-	c.BaseFailurePolicy.HandleErrors(errs...)
-	return c
-}
+func (c *config[R]) HandleErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] {
-	c.BaseFailurePolicy.HandleErrorTypes(errs...)
-	return c
-}
+func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleResult(result R) Builder[R] {
-	c.BaseFailurePolicy.HandleResult(result)
-	return c
-}
+func (c *config[R]) HandleResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) HandleIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseFailurePolicy.HandleIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnSuccess(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnSuccess(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFailure(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnFailure(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFallbackExecuted(listener func(event failsafe.ExecutionDoneEvent[R])) Builder[R] {
-	c.onFallbackExecuted = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() Fallback[R] {
-	return &fallback[R]{
-		config: *c, // TODO copy base fields
-	}
-}
+func (c *config[R]) Build() Fallback[R] { _ = "STUB: not implemented"; return nil }
+
+// TODO copy base fields
 
 type fallback[R any] struct {
 	config[R]
 }
 
-func (fb *fallback[R]) ToExecutor(_ R) any {
-	fbe := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{
-			BaseFailurePolicy: fb.BaseFailurePolicy,
-		},
-		fallback: fb,
-	}
-	fbe.Executor = fbe
-	return fbe
-}
+func (fb *fallback[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

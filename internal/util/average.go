@@ -18,35 +18,21 @@ type MovingAverage struct {
 // provide more stability by retaining influence from older samples. The warmupSamples parameter controls how many
 // samples must be recorded before exponential decay begins, during which a simple average is used instead.
 func NewMovingAverage(age uint, warmupSamples uint8) MovingAverage {
-	return MovingAverage{
-		warmupSamples:   warmupSamples,
-		smoothingFactor: 2 / (float64(age) + 1),
-	}
+	_ = "STUB: not implemented"
+	return *new(MovingAverage)
 }
 
 // Add adds a value to the series and updates the moving average. Add decays the MovingAverage value via:
 //
-//   (oldValue * (1 - smoothingFactor)) + (newValue * smoothingFactor)
-func (e *MovingAverage) Add(newValue float64) float64 {
-	switch {
-	case e.count < e.warmupSamples:
-		e.count++
-		e.sum += newValue
-		e.value = e.sum / float64(e.count)
-	default:
-		e.value = Smooth(e.value, newValue, e.smoothingFactor)
-	}
-	return e.value
-}
+//	(oldValue * (1 - smoothingFactor)) + (newValue * smoothingFactor)
+func (e *MovingAverage) Add(newValue float64) float64 { _ = "STUB: not implemented"; return 0 }
 
 // Value gets the current value of the moving average.
 func (e *MovingAverage) Value() float64 {
-	return e.value
+	_ = "STUB: not implemented"
+
+	// Reset resets the value of the moving average and requires a new warmup if one was configured.
+	return 0
 }
 
-// Reset resets the value of the moving average and requires a new warmup if one was configured.
-func (e *MovingAverage) Reset() {
-	e.count = 0
-	e.value = 0
-	e.sum = 0
-}
+func (e *MovingAverage) Reset() { _ = "STUB: not implemented"; return }

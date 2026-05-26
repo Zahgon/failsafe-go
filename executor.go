@@ -99,107 +99,85 @@ type executor[R any] struct {
 // This creates the following composition when executing a func and handling its result:
 //
 //	Fallback(RetryPolicy(CircuitBreaker(func)))
-func With[R any](policies ...Policy[R]) Executor[R] {
-	return &executor[R]{
-		policies: policies,
-		ctx:      context.Background(),
-	}
-}
+func With[R any](policies ...Policy[R]) Executor[R] { _ = "STUB: not implemented"; return nil }
 
 // WithAny creates and returns a new Executor that can be used to compose other policies with the result type R, for the
 // final composed execution. The executor will handle failures according to the given policies.
 func WithAny[R any](policy ResultAgnosticPolicy[any]) Executor[R] {
-	return &executor[R]{
-		policies: []Policy[R]{&policyAnyWrapper[R]{inner: policy}},
-		ctx:      context.Background(),
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) Compose(innerPolicy Policy[R]) Executor[R] {
-	e.policies = append(e.policies, innerPolicy)
-	return e
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) ComposeAny(innerPolicy ResultAgnosticPolicy[any]) Executor[R] {
-	e.policies = append(e.policies, &policyAnyWrapper[R]{inner: innerPolicy})
-	return e
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) Context() context.Context {
-	return e.ctx
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 func (e *executor[R]) WithContext(ctx context.Context) Executor[R] {
-	c := *e
-	if ctx != nil {
-		c.ctx = ctx
-	}
-	return &c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) OnDone(listener func(ExecutionDoneEvent[R])) Executor[R] {
-	e.onDone = listener
-	return e
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) OnSuccess(listener func(ExecutionDoneEvent[R])) Executor[R] {
-	e.onSuccess = listener
-	return e
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) OnFailure(listener func(ExecutionDoneEvent[R])) Executor[R] {
-	e.onFailure = listener
-	return e
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (e *executor[R]) Run(fn func() error) error {
-	_, err := e.executeSync(func(_ Execution[R]) (R, error) {
-		return *new(R), fn()
-	}, false)
-	return err
-}
+func (e *executor[R]) Run(fn func() error) error { _ = "STUB: not implemented"; return nil }
 
 func (e *executor[R]) RunWithExecution(fn func(exec Execution[R]) error) error {
-	_, err := e.executeSync(func(exec Execution[R]) (R, error) {
-		return *new(R), fn(exec)
-	}, true)
-	return err
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) Get(fn func() (R, error)) (R, error) {
-	return e.executeSync(func(_ Execution[R]) (R, error) {
-		return fn()
-	}, false)
+	_ = "STUB: not implemented"
+	return *new(R), nil
 }
 
 func (e *executor[R]) GetWithExecution(fn func(exec Execution[R]) (R, error)) (R, error) {
-	return e.executeSync(func(exec Execution[R]) (R, error) {
-		return fn(exec)
-	}, true)
+	_ = "STUB: not implemented"
+	return *new(R), nil
 }
 
 func (e *executor[R]) RunAsync(fn func() error) ExecutionResult[R] {
-	return e.executeAsync(func(_ Execution[R]) (R, error) {
-		return *new(R), fn()
-	}, false)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) RunAsyncWithExecution(fn func(exec Execution[R]) error) ExecutionResult[R] {
-	return e.executeAsync(func(exec Execution[R]) (R, error) {
-		return *new(R), fn(exec)
-	}, true)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) GetAsync(fn func() (R, error)) ExecutionResult[R] {
-	return e.executeAsync(func(_ Execution[R]) (R, error) {
-		return fn()
-	}, false)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) GetAsyncWithExecution(fn func(exec Execution[R]) (R, error)) ExecutionResult[R] {
-	return e.executeAsync(func(exec Execution[R]) (R, error) {
-		return fn(exec)
-	}, true)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // This type mirrors part of policy.Executor, which we don't import here to avoid a cycle.
@@ -208,89 +186,40 @@ type policyExecutor[R any] interface {
 }
 
 func (e *executor[R]) executeSync(fn func(exec Execution[R]) (R, error), withExec bool) (R, error) {
-	er := e.execute(fn, newExecution[R](e.ctx), withExec)
-	return er.Result, er.Error
+	_ = "STUB: not implemented"
+	return *new(R), nil
 }
 
 func (e *executor[R]) executeAsync(fn func(exec Execution[R]) (R, error), withExec bool) ExecutionResult[R] {
-	var cancelFunc func()
-	ctx := e.ctx
-	if ctx != nil {
-		ctx, cancelFunc = context.WithCancel(ctx)
-	}
-	exec := newExecution[R](ctx)
-	result := &executionResult[R]{
-		execution:  exec,
-		cancelFunc: cancelFunc,
-		doneChan:   make(chan any, 1),
-	}
-	go func() {
-		result.record(e.execute(fn, exec, withExec))
-	}()
-	return result
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (e *executor[R]) execute(fn func(exec Execution[R]) (R, error), outerExec *execution[R], withExec bool) *common.PolicyResult[R] {
-	outerFn := func(exec Execution[R]) *common.PolicyResult[R] {
-		execInternal := exec.(*execution[R])
-		var execForUser Execution[R]
-		if withExec {
-			// Only copy and provide an execution to the user fn if needed
-			execForUser = execInternal.copy()
-		}
-		result, err := fn(execForUser)
-		execInternal.record()
-		return &common.PolicyResult[R]{
-			Result:     result,
-			Error:      err,
-			Done:       true,
-			Success:    true,
-			SuccessAll: true,
-		}
-	}
-
-	// Compose policy executors from the innermost policy to the outermost
-	for i := len(e.policies) - 1; i >= 0; i-- {
-		pe := e.policies[i].ToExecutor(*new(R)).(policyExecutor[R])
-		outerFn = pe.Apply(outerFn)
-	}
-
-	// Execute
-	er := outerFn(outerExec)
-
-	if e.onSuccess != nil && er.SuccessAll {
-		e.onSuccess(newExecutionDoneEvent(outerExec, er))
-	} else if e.onFailure != nil && !er.SuccessAll {
-		e.onFailure(newExecutionDoneEvent(outerExec, er))
-	}
-	if e.onDone != nil {
-		e.onDone(newExecutionDoneEvent(outerExec, er))
-	}
-	return er
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// Only copy and provide an execution to the user fn if needed
+
+// Compose policy executors from the innermost policy to the outermost
+
+// Execute
 
 // policyAnyWrapper adapts Policy[R] to Policy[any], allowing Policy[any] to be used in compositions with Policy[R].
 type policyAnyWrapper[R any] struct {
 	inner Policy[any]
 }
 
-func (p *policyAnyWrapper[R]) ToExecutor(_ R) any {
-	anyExecutor := p.inner.ToExecutor(nil).(policyExecutor[any])
-	return &policyExecutorAnyWrapper[R]{inner: anyExecutor}
-}
+func (p *policyAnyWrapper[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 type policyExecutorAnyWrapper[R any] struct {
 	inner policyExecutor[any]
 }
 
 func (pe *policyExecutorAnyWrapper[R]) Apply(innerFn func(Execution[R]) *common.PolicyResult[R]) func(Execution[R]) *common.PolicyResult[R] {
-	return func(exec Execution[R]) *common.PolicyResult[R] {
-		// Adapt func(Execution[any]) *PolicyResult[any] to func(Execution[R]) *PolicyResult[R]
-		anyFn := pe.inner.Apply(func(anyExec Execution[any]) *common.PolicyResult[any] {
-			result := innerFn(exec)
-			return resultToAny(result)
-		})
-		anyResult := anyFn(&executionAnyWrapper[R]{exec.(*execution[R])})
-		return resultFromAny[R](anyResult)
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// Adapt func(Execution[any]) *PolicyResult[any] to func(Execution[R]) *PolicyResult[R]

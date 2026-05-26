@@ -2,7 +2,6 @@ package util
 
 import (
 	"context"
-	"math"
 	"reflect"
 	"time"
 )
@@ -11,7 +10,7 @@ type number interface {
 	~int | ~int64 | ~uint | ~uint64
 }
 
-func noop(_ error) {}
+func noop(_ error) { _ = "STUB: not implemented"; return }
 
 var errorType = reflect.TypeOf((*error)(nil)).Elem()
 
@@ -19,81 +18,16 @@ var errorType = reflect.TypeOf((*error)(nil)).Elem()
 // similar to the test that errors.As performs, but does not actually assign a value and allows a non-pointer target.
 // This method also allows a non-pointer target for an error that's implemented with pointer receivers.
 // Panics if target is nil or not an error.
-func ErrorTypesMatch(err error, target any) bool {
-	if err == nil {
-		return false
-	}
-	if target == nil {
-		panic("target cannot be nil")
-	}
-	targetType := reflect.TypeOf(target)
-	if targetType.Kind() == reflect.Ptr {
-		targetType = targetType.Elem()
-	}
-	if targetType.Kind() != reflect.Interface && !targetType.Implements(errorType) {
-		// If targetType is not an error, convert it to a pointer and check again
-		targetType = reflect.PointerTo(targetType)
-		if !targetType.Implements(errorType) {
-			panic("target must be interface or implement error")
-		}
-	}
-	return errorAs(err, targetType)
-}
+func ErrorTypesMatch(err error, target any) bool { _ = "STUB: not implemented"; return false }
 
-func errorAs(err error, targetType reflect.Type) bool {
-	for {
-		if reflect.TypeOf(err).AssignableTo(targetType) {
-			return true
-		}
-		switch x := err.(type) {
-		case interface{ Unwrap() error }:
-			err = x.Unwrap()
-			if err == nil {
-				return false
-			}
-		case interface{ Unwrap() []error }:
-			for _, err := range x.Unwrap() {
-				if err == nil {
-					continue
-				}
-				if errorAs(err, targetType) {
-					return true
-				}
-			}
-			return false
-		default:
-			return false
-		}
-	}
-}
+// If targetType is not an error, convert it to a pointer and check again
+
+func errorAs(err error, targetType reflect.Type) bool { _ = "STUB: not implemented"; return false }
 
 // MergeContexts returns a context that is canceled when either ctx1 or ctx2 are Done.
 func MergeContexts(ctx1, ctx2 context.Context) (context.Context, context.CancelCauseFunc) {
-	if ctx1 == ctx2 {
-		return ctx1, noop
-	}
-	bgContext := context.Background()
-	if ctx1 == bgContext {
-		return ctx2, noop
-	}
-	if ctx2 == bgContext {
-		return ctx1, noop
-	}
-	ctx, cancel := context.WithCancelCause(context.Background())
-	merged := &mergedContext{
-		Context: ctx,
-		ctx1:    ctx1,
-		ctx2:    ctx2,
-	}
-	go func() {
-		select {
-		case <-ctx1.Done():
-			cancel(ctx1.Err())
-		case <-ctx2.Done():
-			cancel(ctx2.Err())
-		}
-	}()
-	return merged, cancel
+	_ = "STUB: not implemented"
+	return *new(context.Context), *new(context.CancelCauseFunc)
 }
 
 // mergedContext wraps two parent contexts and checks both for values.
@@ -103,69 +37,41 @@ type mergedContext struct {
 }
 
 // Value checks ctx1 first, then ctx2.
-func (m *mergedContext) Value(key any) any {
-	if val := m.ctx1.Value(key); val != nil {
-		return val
-	}
-	return m.ctx2.Value(key)
-}
+func (m *mergedContext) Value(key any) any { _ = "STUB: not implemented"; return *new(any) }
 
 // Deadline returns the earliest deadline from both parent contexts.
 func (m *mergedContext) Deadline() (deadline time.Time, ok bool) {
-	d1, ok1 := m.ctx1.Deadline()
-	d2, ok2 := m.ctx2.Deadline()
-
-	switch {
-	case ok1 && ok2:
-		if d1.Before(d2) {
-			return d1, true
-		}
-		return d2, true
-	case ok1:
-		return d1, true
-	case ok2:
-		return d2, true
-	default:
-		return time.Time{}, false
-	}
+	_ = "STUB: not implemented"
+	return *new(time.Time), false
 }
 
 // AppliesToAny returns true if any of the biPredicates evaluate to true for the values.
 func AppliesToAny[A any, B any](biPredicates []func(A, B) bool, value1 A, value2 B) bool {
-	for _, p := range biPredicates {
-		if p(value1, value2) {
-			return true
-		}
-	}
+	_ = "STUB: not implemented"
 	return false
 }
 
 // RoundDown returns the input rounded down to the nearest interval.
-func RoundDown[T number](input T, interval T) T {
-	return input - input%interval
-}
+func RoundDown[T number](input T, interval T) T { _ = "STUB: not implemented"; return *new(T) }
 
 func RandomDelayInRange[T number](delayMin T, delayMax T, random float64) T {
-	min64 := float64(delayMin)
-	max64 := float64(delayMax)
-	return T(random*(max64-min64) + min64)
+	_ = "STUB: not implemented"
+	return *new(T)
 }
 
 func RandomDelay[T number](delay T, jitter T, random float64) T {
-	randomAddend := (1 - random*2) * float64(jitter)
-	return delay + T(randomAddend)
+	_ = "STUB: not implemented"
+	return *new(T)
 }
 
 func RandomDelayFactor[T number](delay T, jitterFactor float64, random float64) T {
-	randomFactor := 1 + (1-random*2)*jitterFactor
-	return T(float64(delay) * randomFactor)
+	_ = "STUB: not implemented"
+	return *new(T)
 }
 
 // Smooth returns a value that is decreased by some portion of the oldValue, and increased by some portion of the
 // newValue, based on the factor.
-func Smooth(oldValue, newValue, factor float64) float64 {
-	return oldValue*(1-factor) + newValue*factor
-}
+func Smooth(oldValue, newValue, factor float64) float64 { _ = "STUB: not implemented"; return 0 }
 
 var log10Values []int
 
@@ -178,14 +84,7 @@ func init() {
 	}
 }
 
-func Log10Func(factor int) func(limit int) int {
-	return func(limit int) int {
-		if limit < len(log10Values) {
-			return factor * log10Values[limit]
-		}
-		return factor * int(math.Log10(float64(limit)))
-	}
-}
+func Log10Func(factor int) func(limit int) int { _ = "STUB: not implemented"; return nil }
 
 type Clock interface {
 	Now() time.Time
@@ -196,9 +95,7 @@ var WallClock = &wallClock{}
 type wallClock struct {
 }
 
-func (wc *wallClock) Now() time.Time {
-	return time.Now()
-}
+func (wc *wallClock) Now() time.Time { _ = "STUB: not implemented"; return *new(time.Time) }
 
 type Stopwatch interface {
 	ElapsedTime() time.Duration
@@ -210,20 +107,13 @@ type wallClockStopwatch struct {
 	startTime time.Time
 }
 
-func NewStopwatch() Stopwatch {
-	return &wallClockStopwatch{
-		startTime: time.Now(),
-	}
-}
+func NewStopwatch() Stopwatch { _ = "STUB: not implemented"; return *new(Stopwatch) }
 
 func (s *wallClockStopwatch) ElapsedTime() time.Duration {
-	return time.Since(s.startTime)
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (s *wallClockStopwatch) Reset() {
-	s.startTime = time.Now()
-}
+func (s *wallClockStopwatch) Reset() { _ = "STUB: not implemented"; return }
 
-func Round(v float64) float64 {
-	return math.Round(v*100) / 100
-}
+func Round(v float64) float64 { _ = "STUB: not implemented"; return 0 }

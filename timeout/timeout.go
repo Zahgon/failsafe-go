@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/failsafe-go/failsafe-go"
-	"github.com/failsafe-go/failsafe-go/policy"
 )
 
 // ErrExceeded is returned when an execution exceeds a configured timeout.
@@ -42,42 +41,27 @@ var _ Builder[any] = &config[any]{}
 // exceed a time limit. Any policies composed inside the timeout, such as retries, will also be canceled. If the
 // execution is configured with a Context, a child context will be created for the execution and canceled when the
 // Timeout is exceeded.
-func New[R any](timeLimit time.Duration) Timeout[R] {
-	return NewBuilder[R](timeLimit).Build()
-}
+func New[R any](timeLimit time.Duration) Timeout[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder returns a Builder for execution result type R which builds Timeouts for the timeLimit. The Timeout will
 // cancel executions if they exceed a time limit. Any policies composed inside the timeout, such as retries, will also be
 // canceled. If the execution is configured with a Context, a child context will be created for the execution and canceled when the Timeout
 // is exceeded.
-func NewBuilder[R any](timeLimit time.Duration) Builder[R] {
-	return &config[R]{
-		timeLimit: timeLimit,
-	}
-}
+func NewBuilder[R any](timeLimit time.Duration) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) OnTimeoutExceeded(listener func(event failsafe.ExecutionDoneEvent[R])) Builder[R] {
-	c.onTimeoutExceeded = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c *config[R]) Build() Timeout[R] {
-	return &timeout[R]{
-		config: *c, // TODO copy base fields
-	}
-}
+func (c *config[R]) Build() Timeout[R] { _ = "STUB: not implemented"; return nil }
+
+// TODO copy base fields
 
 type timeout[R any] struct {
 	config[R]
 }
 
-func (*timeout[R]) ResultAgnostic() {}
+func (*timeout[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
-func (t *timeout[R]) ToExecutor(_ R) any {
-	te := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{},
-		timeout:      t,
-	}
-	te.Executor = te
-	return te
-}
+func (t *timeout[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }

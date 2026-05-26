@@ -8,7 +8,6 @@ import (
 
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/internal/util"
-	"github.com/failsafe-go/failsafe-go/policy"
 )
 
 // ErrOpen is returned when an execution is attempted against a circuit breaker that is open.
@@ -17,18 +16,7 @@ var ErrOpen = errors.New("circuit breaker open")
 // State of a CircuitBreaker.
 type State int
 
-func (s State) String() string {
-	switch s {
-	case ClosedState:
-		return "closed"
-	case OpenState:
-		return "open"
-	case HalfOpenState:
-		return "half-open"
-	default:
-		return "unknown"
-	}
-}
+func (s State) String() string { _ = "STUB: not implemented"; return "" }
 
 const (
 	// ClosedState indicates the circuit is closed and fully functional, allowing executions to occur.
@@ -153,13 +141,16 @@ type StateChangedEvent struct {
 
 // Metrics returns metrics from the CircuitBreaker old state.
 func (e *StateChangedEvent) Metrics() Metrics {
-	return e.metrics
+	_ = "STUB: not implemented"
+
+	// Context returns the context configured for the execution, else context.Background if none was configured. For
+	// executions involving a timeout or hedge, each attempt will get a separate child context.
+	return *new(Metrics)
 }
 
-// Context returns the context configured for the execution, else context.Background if none was configured. For
-// executions involving a timeout or hedge, each attempt will get a separate child context.
 func (e *StateChangedEvent) Context() context.Context {
-	return e.context
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 type circuitBreaker[R any] struct {
@@ -170,239 +161,101 @@ type circuitBreaker[R any] struct {
 	state circuitState[R]
 }
 
-func (*circuitBreaker[R]) ResultAgnostic() {}
+func (*circuitBreaker[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) TryAcquirePermit() bool {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.tryAcquirePermit()
-}
+func (cb *circuitBreaker[R]) TryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
-func (cb *circuitBreaker[R]) Open() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.open(nil)
-}
+func (cb *circuitBreaker[R]) Open() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) HalfOpen() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.halfOpen()
-}
+func (cb *circuitBreaker[R]) HalfOpen() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) Close() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.close()
-}
+func (cb *circuitBreaker[R]) Close() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) State() State {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.state()
-}
+func (cb *circuitBreaker[R]) State() State { _ = "STUB: not implemented"; return *new(State) }
 
 func (cb *circuitBreaker[R]) RemainingDelay() time.Duration {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.remainingDelay()
+	_ = "STUB: not implemented"
+	return *new(time.Duration)
 }
 
-func (cb *circuitBreaker[R]) Metrics() Metrics {
-	return cb
-}
+func (cb *circuitBreaker[R]) Metrics() Metrics { _ = "STUB: not implemented"; return *new(Metrics) }
 
-func (cb *circuitBreaker[R]) IsOpen() bool {
-	return cb.State() == OpenState
-}
+func (cb *circuitBreaker[R]) IsOpen() bool { _ = "STUB: not implemented"; return false }
 
-func (cb *circuitBreaker[R]) IsHalfOpen() bool {
-	return cb.State() == HalfOpenState
-}
+func (cb *circuitBreaker[R]) IsHalfOpen() bool { _ = "STUB: not implemented"; return false }
 
-func (cb *circuitBreaker[R]) IsClosed() bool {
-	return cb.State() == ClosedState
-}
+func (cb *circuitBreaker[R]) IsClosed() bool { _ = "STUB: not implemented"; return false }
 
-func (cb *circuitBreaker[R]) Executions() uint {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.ExecutionCount()
-}
+func (cb *circuitBreaker[R]) Executions() uint { _ = "STUB: not implemented"; return 0 }
 
-func (cb *circuitBreaker[R]) Failures() uint {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.FailureCount()
-}
+func (cb *circuitBreaker[R]) Failures() uint { _ = "STUB: not implemented"; return 0 }
 
-func (cb *circuitBreaker[R]) FailureRate() float64 {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.FailureRate()
-}
+func (cb *circuitBreaker[R]) FailureRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (cb *circuitBreaker[R]) Successes() uint {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.SuccessCount()
-}
+func (cb *circuitBreaker[R]) Successes() uint { _ = "STUB: not implemented"; return 0 }
 
-func (cb *circuitBreaker[R]) SuccessRate() float64 {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	return cb.state.SuccessRate()
-}
+func (cb *circuitBreaker[R]) SuccessRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (cb *circuitBreaker[R]) RecordFailure() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.recordFailure(nil)
-}
+func (cb *circuitBreaker[R]) RecordFailure() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) RecordError(err error) {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.recordResult(*new(R), err)
-}
+func (cb *circuitBreaker[R]) RecordError(err error) { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) RecordResult(result R) {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.recordResult(result, nil)
-}
+func (cb *circuitBreaker[R]) RecordResult(result R) { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) RecordSuccess() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.recordSuccess()
-}
+func (cb *circuitBreaker[R]) RecordSuccess() { _ = "STUB: not implemented"; return }
 
-func (cb *circuitBreaker[R]) ToExecutor(_ R) any {
-	cbe := &executor[R]{
-		BaseExecutor: policy.BaseExecutor[R]{
-			BaseFailurePolicy: &cb.BaseFailurePolicy,
-		},
-		circuitBreaker: cb,
-	}
-	cbe.Executor = cbe
-	return cbe
-}
+func (cb *circuitBreaker[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 // Transitions to the newState if not already in that state and calls listener after transitioning.
 //
 // Requires external locking.
 func (cb *circuitBreaker[R]) transitionTo(newState State, exec failsafe.Execution[R], listener func(StateChangedEvent)) {
-	currentState := cb.state
-	if currentState.state() != newState {
-		switch newState {
-		case ClosedState:
-			cb.state = newClosedState(cb)
-		case OpenState:
-			delay := cb.ComputeDelay(exec)
-			if delay == -1 {
-				delay = cb.Delay
-			}
-			cb.state = newOpenState(cb, cb.state, delay)
-		case HalfOpenState:
-			cb.state = newHalfOpenState(cb)
-		}
-
-		if listener != nil || cb.stateChangedListener != nil {
-			ctx := context.Background()
-			if exec != nil {
-				ctx = exec.Context()
-			}
-			event := StateChangedEvent{
-				OldState: currentState.state(),
-				NewState: newState,
-				metrics:  &eventMetrics{currentState},
-				context:  ctx,
-			}
-
-			cb.mu.Unlock()
-			if listener != nil {
-				listener(event)
-			}
-			if cb.stateChangedListener != nil {
-				cb.stateChangedListener(event)
-			}
-			cb.mu.Lock()
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 type eventMetrics struct {
 	stats util.ExecutionStats
 }
 
-func (m *eventMetrics) Executions() uint {
-	return m.stats.ExecutionCount()
-}
+func (m *eventMetrics) Executions() uint { _ = "STUB: not implemented"; return 0 }
 
-func (m *eventMetrics) Failures() uint {
-	return m.stats.FailureCount()
-}
+func (m *eventMetrics) Failures() uint { _ = "STUB: not implemented"; return 0 }
 
-func (m *eventMetrics) FailureRate() float64 {
-	return m.stats.FailureRate()
-}
+func (m *eventMetrics) FailureRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (m *eventMetrics) Successes() uint {
-	return m.stats.SuccessCount()
-}
+func (m *eventMetrics) Successes() uint { _ = "STUB: not implemented"; return 0 }
 
-func (m *eventMetrics) SuccessRate() float64 {
-	return m.stats.SuccessRate()
-}
+func (m *eventMetrics) SuccessRate() float64 { _ = "STUB: not implemented"; return 0 }
 
 // Requires external locking.
-func (cb *circuitBreaker[R]) tryAcquirePermit() bool {
-	return cb.state.tryAcquirePermit()
-}
+func (cb *circuitBreaker[R]) tryAcquirePermit() bool { _ = "STUB: not implemented"; return false }
 
 // Opens the circuit breaker and considers the execution when computing the delay before the circuit breaker
 // will transition to half open.
 //
 // Requires external locking.
 func (cb *circuitBreaker[R]) open(execution failsafe.Execution[R]) {
-	cb.transitionTo(OpenState, execution, cb.openListener)
+	_ = "STUB: not implemented"
+	return
 }
 
 // Requires external locking.
-func (cb *circuitBreaker[R]) close() {
-	cb.transitionTo(ClosedState, nil, cb.closeListener)
-}
+func (cb *circuitBreaker[R]) close() { _ = "STUB: not implemented"; return }
 
 // Requires external locking.
-func (cb *circuitBreaker[R]) halfOpen() {
-	cb.transitionTo(HalfOpenState, nil, cb.halfOpenListener)
-}
+func (cb *circuitBreaker[R]) halfOpen() { _ = "STUB: not implemented"; return }
 
 // Requires external locking.
-func (cb *circuitBreaker[R]) recordResult(result R, err error) {
-	if cb.IsFailure(result, err) {
-		cb.recordFailure(nil)
-	} else {
-		cb.recordSuccess()
-	}
-}
+func (cb *circuitBreaker[R]) recordResult(result R, err error) { _ = "STUB: not implemented"; return }
 
 // Requires external locking.
-func (cb *circuitBreaker[R]) recordSuccess() {
-	cb.state.RecordSuccess()
-	cb.state.checkThresholdAndReleasePermit(nil)
-}
+func (cb *circuitBreaker[R]) recordSuccess() { _ = "STUB: not implemented"; return }
 
 // Requires external locking.
 func (cb *circuitBreaker[R]) recordFailure(exec failsafe.Execution[R]) {
-	cb.state.RecordFailure()
-	cb.state.checkThresholdAndReleasePermit(exec)
+	_ = "STUB: not implemented"
+	return
 }
 
-func (cb *circuitBreaker[R]) Reset() {
-	cb.mu.Lock()
-	defer cb.mu.Unlock()
-	cb.close()
-	cb.state.Reset()
-}
+func (cb *circuitBreaker[R]) Reset() { _ = "STUB: not implemented"; return }

@@ -7,7 +7,6 @@
 package pbfixtures
 
 import (
-	"reflect"
 	"sync"
 
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -29,44 +28,21 @@ type PingRequest struct {
 	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (x *PingRequest) Reset() {
-	*x = PingRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_ping_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *PingRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *PingRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *PingRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*PingRequest) ProtoMessage() {}
+func (*PingRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_ping_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
-func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_ping_proto_rawDescGZIP(), []int{0}
-}
+func (*PingRequest) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *PingRequest) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
+func (x *PingRequest) GetMsg() string { _ = "STUB: not implemented"; return "" }
 
 type PingResponse struct {
 	state         protoimpl.MessageState
@@ -76,44 +52,21 @@ type PingResponse struct {
 	Msg string `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (x *PingResponse) Reset() {
-	*x = PingResponse{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_ping_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *PingResponse) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *PingResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *PingResponse) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*PingResponse) ProtoMessage() {}
+func (*PingResponse) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *PingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_ping_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
-func (*PingResponse) Descriptor() ([]byte, []int) {
-	return file_ping_proto_rawDescGZIP(), []int{1}
-}
+func (*PingResponse) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *PingResponse) GetMsg() string {
-	if x != nil {
-		return x.Msg
-	}
-	return ""
-}
+func (x *PingResponse) GetMsg() string { _ = "STUB: not implemented"; return "" }
 
 var File_ping_proto protoreflect.FileDescriptor
 
@@ -141,12 +94,7 @@ var (
 	file_ping_proto_rawDescData = file_ping_proto_rawDesc
 )
 
-func file_ping_proto_rawDescGZIP() []byte {
-	file_ping_proto_rawDescOnce.Do(func() {
-		file_ping_proto_rawDescData = protoimpl.X.CompressGZIP(file_ping_proto_rawDescData)
-	})
-	return file_ping_proto_rawDescData
-}
+func file_ping_proto_rawDescGZIP() []byte { _ = "STUB: not implemented"; return nil }
 
 var file_ping_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_ping_proto_goTypes = []any{
@@ -165,53 +113,5 @@ var file_ping_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_ping_proto_init() }
-func file_ping_proto_init() {
-	if File_ping_proto != nil {
-		return
-	}
-	if !protoimpl.UnsafeEnabled {
-		file_ping_proto_msgTypes[0].Exporter = func(v any, i int) any {
-			switch v := v.(*PingRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_ping_proto_msgTypes[1].Exporter = func(v any, i int) any {
-			switch v := v.(*PingResponse); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_ping_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
-			NumExtensions: 0,
-			NumServices:   1,
-		},
-		GoTypes:           file_ping_proto_goTypes,
-		DependencyIndexes: file_ping_proto_depIdxs,
-		MessageInfos:      file_ping_proto_msgTypes,
-	}.Build()
-	File_ping_proto = out.File
-	file_ping_proto_rawDesc = nil
-	file_ping_proto_goTypes = nil
-	file_ping_proto_depIdxs = nil
-}
+func init()                 { file_ping_proto_init() }
+func file_ping_proto_init() { _ = "STUB: not implemented"; return }

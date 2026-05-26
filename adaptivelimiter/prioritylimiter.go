@@ -6,7 +6,6 @@ import (
 
 	"github.com/failsafe-go/failsafe-go"
 	"github.com/failsafe-go/failsafe-go/internal"
-	"github.com/failsafe-go/failsafe-go/policy"
 	"github.com/failsafe-go/failsafe-go/priority"
 )
 
@@ -86,109 +85,67 @@ type priorityLimiter[R any] struct {
 	prioritizer *internal.BasePrioritizer[*queueStats]
 }
 
-func (*priorityLimiter[R]) ResultAgnostic() {}
+func (*priorityLimiter[R]) ResultAgnostic() { _ = "STUB: not implemented"; return }
 
 func (l *priorityLimiter[R]) AcquirePermit(ctx context.Context) (Permit, error) {
-	return l.AcquirePermitWithLevel(ctx, l.prioritizer.LevelFromContext(ctx))
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
 func (l *priorityLimiter[R]) AcquirePermitWithMaxWait(ctx context.Context, maxWaitTime time.Duration) (Permit, error) {
-	level := l.prioritizer.LevelFromContext(ctx)
-	if !l.CanAcquirePermitWithLevel(level) {
-		return nil, ErrExceeded
-	}
-
-	// Record levels when overloaded
-	if l.adaptiveLimiter.semaphore.IsFull() {
-		l.prioritizer.LevelTracker.RecordLevel(level)
-	}
-
-	// Acquire, blocking if necessary
-	permit, err := l.adaptiveLimiter.AcquirePermitWithMaxWait(ctx, maxWaitTime)
-	if err != nil {
-		return nil, err
-	}
-
-	return l.enhancedPermit(ctx, permit), nil
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
+// Record levels when overloaded
+
+// Acquire, blocking if necessary
+
 func (l *priorityLimiter[R]) AcquirePermitWithPriority(ctx context.Context, priority priority.Priority) (Permit, error) {
-	return l.AcquirePermitWithLevel(ctx, l.prioritizer.LevelFromContextWithPriority(ctx, priority))
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
 func (l *priorityLimiter[R]) AcquirePermitWithLevel(ctx context.Context, level int) (Permit, error) {
-	if !l.CanAcquirePermitWithLevel(level) {
-		return nil, ErrExceeded
-	}
-
-	// Record levels when overloaded
-	if l.adaptiveLimiter.semaphore.IsFull() {
-		l.prioritizer.LevelTracker.RecordLevel(level)
-	}
-
-	// Acquire, blocking if necessary
-	permit, err := l.adaptiveLimiter.AcquirePermit(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return l.enhancedPermit(ctx, permit), nil
+	_ = "STUB: not implemented"
+	return *new(Permit), nil
 }
 
+// Record levels when overloaded
+
+// Acquire, blocking if necessary
+
 func (l *priorityLimiter[R]) CanAcquirePermit(ctx context.Context) bool {
-	return l.CanAcquirePermitWithLevel(l.prioritizer.LevelFromContext(ctx))
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (l *priorityLimiter[R]) CanAcquirePermitWithPriority(ctx context.Context, priority priority.Priority) bool {
-	return l.CanAcquirePermitWithLevel(l.prioritizer.LevelFromContextWithPriority(ctx, priority))
+	_ = "STUB: not implemented"
+	return false
 }
 
 func (l *priorityLimiter[R]) CanAcquirePermitWithLevel(level int) bool {
+	_ = "STUB: not implemented"
 	// When this is the only limiter being used by the prioritizer, we can reject based on the limiter's capacity rather
 	// than wait for the next prioritizer calibration.
-	if l.prioritizer.RegisteredPolicies() == 1 {
-		// Return immediately if the limiter has capacity
-		if l.adaptiveLimiter.CanAcquirePermit() {
-			return true
-		}
-
-		// Check the limiter's max capacity
-		maxQueue := int(float64(l.Limit()) * l.maxRejectionFactor)
-		if l.Queued() >= maxQueue {
-			return false
-		}
-	}
-
-	return level >= l.prioritizer.RejectionThreshold()
+	return false
 }
 
-func (l *priorityLimiter[R]) ToExecutor(_ R) any {
-	e := &executor[R]{
-		BaseExecutor:    policy.BaseExecutor[R]{},
-		blockingLimiter: l,
-	}
-	e.Executor = e
-	return e
-}
+// Return immediately if the limiter has capacity
+
+// Check the limiter's max capacity
+
+func (l *priorityLimiter[R]) ToExecutor(_ R) any { _ = "STUB: not implemented"; return *new(any) }
 
 func (l *priorityLimiter[R]) enhancedPermit(ctx context.Context, permit Permit) Permit {
-	if l.prioritizer.UsageTracker != nil && ctx != nil {
-		if value := ctx.Value(priority.UserKey); value != nil {
-			if userID, ok := value.(string); ok && userID != "" {
-				if p, ok := permit.(*recordingPermit[R]); ok {
-					p.userID = userID
-					p.usageTracker = l.prioritizer.UsageTracker
-				}
-			}
-		}
-	}
-	return permit
+	_ = "STUB: not implemented"
+	return *new(Permit)
 }
 
 func (l *priorityLimiter[R]) canAcquirePermit(ctx context.Context) bool {
-	return l.CanAcquirePermit(ctx)
+	_ = "STUB: not implemented"
+	return false
 }
 
-func (l *priorityLimiter[R]) configRef() *config[R] {
-	return &l.config
-}
+func (l *priorityLimiter[R]) configRef() *config[R] { _ = "STUB: not implemented"; return nil }

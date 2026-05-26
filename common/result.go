@@ -15,17 +15,9 @@ type PolicyResult[R any] struct {
 
 // WithDone returns a new Result for the done and success values.
 func (pr *PolicyResult[R]) WithDone(done bool, success bool) *PolicyResult[R] {
-	c := *pr
-	c.Done = done
-	c.Success = success
-	c.SuccessAll = success && c.SuccessAll
-	return &c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithFailure returns a new Result that is marked as not successful.
-func (pr *PolicyResult[R]) WithFailure() *PolicyResult[R] {
-	c := *pr
-	c.Success = false
-	c.SuccessAll = false
-	return &c
-}
+func (pr *PolicyResult[R]) WithFailure() *PolicyResult[R] { _ = "STUB: not implemented"; return nil }

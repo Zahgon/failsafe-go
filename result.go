@@ -41,48 +41,22 @@ type executionResult[R any] struct {
 }
 
 func (e *executionResult[R]) record(result *common.PolicyResult[R]) {
-	e.result.Store(&result)
-	e.done.Store(true)
-	close(e.doneChan)
-	if e.cancelFunc != nil {
-		e.cancelFunc()
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func (e *executionResult[R]) Done() <-chan any {
-	return e.doneChan
-}
+func (e *executionResult[R]) Done() <-chan any { _ = "STUB: not implemented"; return nil }
 
-func (e *executionResult[R]) IsDone() bool {
-	return e.done.Load()
-}
+func (e *executionResult[R]) IsDone() bool { _ = "STUB: not implemented"; return false }
 
-func (e *executionResult[R]) Get() (R, error) {
-	<-e.doneChan
-	result := e.result.Load()
-	if result != nil {
-		return (*result).Result, (*result).Error
-	}
-	return *new(R), nil
-}
+func (e *executionResult[R]) Get() (R, error) { _ = "STUB: not implemented"; return *new(R), nil }
 
-func (e *executionResult[R]) Result() R {
-	result, _ := e.Get()
-	return result
-}
+func (e *executionResult[R]) Result() R { _ = "STUB: not implemented"; return *new(R) }
 
-func (e *executionResult[R]) Error() error {
-	_, err := e.Get()
-	return err
-}
+func (e *executionResult[R]) Error() error { _ = "STUB: not implemented"; return nil }
 
 func (e *executionResult[R]) Cancel() {
+	_ = "STUB: not implemented"
 	// Propagate cancelation to contexts
-	e.execution.Cancel(&common.PolicyResult[R]{
-		Error: ErrExecutionCanceled,
-		Done:  true,
-	})
-	if e.cancelFunc != nil {
-		e.cancelFunc()
-	}
+	return
 }

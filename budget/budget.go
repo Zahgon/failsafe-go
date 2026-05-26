@@ -70,39 +70,30 @@ type config struct {
 var _ Builder = &config{}
 
 // New returns a new budget with a default maxRate of .2 and minConcurrency of 3.
-func New() Budget {
-	return NewBuilder().Build()
-}
+func New() Budget { _ = "STUB: not implemented"; return *new(Budget) }
 
 // NewBuilder returns a TypeBuilder for execution result type R which builds Budgets with a default maxRate of .2 and
 // minConcurrency of 3.
-func NewBuilder() Builder {
-	return &config{
-		maxRate:        .2,
-		minConcurrency: 3,
-	}
-}
+func NewBuilder() Builder { _ = "STUB: not implemented"; return *new(Builder) }
 
 func (c *config) WithMaxRate(maxRate float64) Builder {
-	c.maxRate = maxRate
-	return c
+	_ = "STUB: not implemented"
+	return *new(Builder)
 }
 
 func (c *config) WithMinConcurrency(minConcurrency uint) Builder {
-	c.minConcurrency = minConcurrency
-	return c
+	_ = "STUB: not implemented"
+	return *new(Builder)
 }
 
 func (c *config) OnBudgetExceeded(listener func(ExceededEvent)) Builder {
-	c.onBudgetExceeded = listener
-	return c
+	_ = "STUB: not implemented"
+	return *new(Builder)
 }
 
-func (c *config) Build() Budget {
-	return &budget{
-		config: *c, // TODO copy base fields
-	}
-}
+func (c *config) Build() Budget { _ = "STUB: not implemented"; return *new(Budget) }
+
+// TODO copy base fields
 
 type budget struct {
 	config
@@ -112,50 +103,19 @@ type budget struct {
 	hedges     atomic.Int32
 }
 
-func (b *budget) TryAcquireRetryPermit() bool {
-	if b.RetryRate() > b.maxRate {
-		return false
-	}
+func (b *budget) TryAcquireRetryPermit() bool { _ = "STUB: not implemented"; return false }
 
-	b.retries.Add(1)
-	b.executions.Add(1)
-	return true
-}
+func (b *budget) TryAcquireHedgePermit() bool { _ = "STUB: not implemented"; return false }
 
-func (b *budget) TryAcquireHedgePermit() bool {
-	if b.HedgeRate() > b.maxRate {
-		return false
-	}
+func (b *budget) ReleaseRetryPermit() { _ = "STUB: not implemented"; return }
 
-	b.hedges.Add(1)
-	b.executions.Add(1)
-	return true
-}
+func (b *budget) ReleaseHedgePermit() { _ = "STUB: not implemented"; return }
 
-func (b *budget) ReleaseRetryPermit() {
-	b.retries.Add(-1)
-	b.executions.Add(-1)
-}
+func (b *budget) RetryRate() float64 { _ = "STUB: not implemented"; return 0 }
 
-func (b *budget) ReleaseHedgePermit() {
-	b.hedges.Add(-1)
-	b.executions.Add(-1)
-}
-
-func (b *budget) RetryRate() float64 {
-	return float64(b.retries.Load()) / float64(b.executions.Load())
-}
-
-func (b *budget) HedgeRate() float64 {
-	return float64(b.hedges.Load()) / float64(b.executions.Load())
-}
+func (b *budget) HedgeRate() float64 { _ = "STUB: not implemented"; return 0 }
 
 func (b *budget) OnBudgetExceeded(executionType ExecutionType, info failsafe.ExecutionInfo) {
-	if b.onBudgetExceeded != nil {
-		b.onBudgetExceeded(ExceededEvent{
-			ExecutionType: executionType,
-			ExecutionInfo: info,
-			Budget:        b,
-		})
-	}
+	_ = "STUB: not implemented"
+	return
 }

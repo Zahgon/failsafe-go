@@ -113,125 +113,94 @@ var _ Builder[any] = &config[any]{}
 // NewWithDefaults creates a count based CircuitBreaker for execution result type R that opens after a single failure,
 // closes after a single success, and has a 1 minute delay by default. To configure additional options on a
 // CircuitBreaker, use NewBuilder() instead.
-func NewWithDefaults[R any]() CircuitBreaker[R] {
-	return NewBuilder[R]().Build()
-}
+func NewWithDefaults[R any]() CircuitBreaker[R] { _ = "STUB: not implemented"; return nil }
 
 // NewBuilder creates a Builder for execution result type R which by default will build a count based circuit
 // breaker that opens after a single failure, closes after a single success, and has a 1 minute delay, unless configured
 // otherwise.
-func NewBuilder[R any]() Builder[R] {
-	return &config[R]{
-		BaseFailurePolicy: policy.BaseFailurePolicy[R]{},
-		BaseDelayablePolicy: policy.BaseDelayablePolicy[R]{
-			Delay: time.Minute,
-		},
-		clock:                       util.WallClock,
-		failureThreshold:            1,
-		failureThresholdingCapacity: 1,
-	}
-}
+func NewBuilder[R any]() Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) Build() CircuitBreaker[R] {
-	breaker := &circuitBreaker[R]{
-		config: *c, // TODO copy base fields
-	}
-	breaker.state = newClosedState[R](breaker)
-	return breaker
-}
+func (c *config[R]) Build() CircuitBreaker[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleErrors(errs ...error) Builder[R] {
-	c.BaseFailurePolicy.HandleErrors(errs...)
-	return c
-}
+// TODO copy base fields
 
-func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] {
-	c.BaseFailurePolicy.HandleErrorTypes(errs...)
-	return c
-}
+func (c *config[R]) HandleErrors(errs ...error) Builder[R] { _ = "STUB: not implemented"; return nil }
 
-func (c *config[R]) HandleResult(result R) Builder[R] {
-	c.BaseFailurePolicy.HandleResult(result)
-	return c
-}
+func (c *config[R]) HandleErrorTypes(errs ...any) Builder[R] { _ = "STUB: not implemented"; return nil }
+
+func (c *config[R]) HandleResult(result R) Builder[R] { _ = "STUB: not implemented"; return nil }
 
 func (c *config[R]) HandleIf(predicate func(R, error) bool) Builder[R] {
-	c.BaseFailurePolicy.HandleIf(predicate)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithFailureThreshold(failureThreshold uint) Builder[R] {
-	return c.WithFailureThresholdRatio(failureThreshold, failureThreshold)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithFailureThresholdRatio(failureThreshold uint, failureThresholdingCapacity uint) Builder[R] {
-	c.failureThreshold = failureThreshold
-	c.failureThresholdingCapacity = failureThresholdingCapacity
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithFailureThresholdPeriod(failureThreshold uint, failureThresholdingPeriod time.Duration) Builder[R] {
-	c.failureThreshold = failureThreshold
-	c.failureThresholdingCapacity = failureThreshold
-	c.failureExecutionThreshold = failureThreshold
-	c.failureThresholdingPeriod = failureThresholdingPeriod
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithFailureRateThreshold(failureRateThreshold float64, failureExecutionThreshold uint, failureThresholdingPeriod time.Duration) Builder[R] {
-	util.Assert(failureRateThreshold >= 0 && failureRateThreshold <= 1, "failureRateThreshold must be between 0 and 1")
-	c.failureRateThreshold = failureRateThreshold
-	c.failureExecutionThreshold = failureExecutionThreshold
-	c.failureThresholdingPeriod = failureThresholdingPeriod
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithSuccessThreshold(successThreshold uint) Builder[R] {
-	return c.WithSuccessThresholdRatio(successThreshold, successThreshold)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithSuccessThresholdRatio(successThreshold uint, successThresholdingCapacity uint) Builder[R] {
-	c.successThreshold = successThreshold
-	c.successThresholdingCapacity = successThresholdingCapacity
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithDelay(delay time.Duration) Builder[R] {
-	c.BaseDelayablePolicy.WithDelay(delay)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) WithDelayFunc(delayFunc failsafe.DelayFunc[R]) Builder[R] {
-	c.BaseDelayablePolicy.WithDelayFunc(delayFunc)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnStateChanged(listener func(event StateChangedEvent)) Builder[R] {
-	c.stateChangedListener = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnClose(listener func(event StateChangedEvent)) Builder[R] {
-	c.closeListener = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnOpen(listener func(event StateChangedEvent)) Builder[R] {
-	c.openListener = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnHalfOpen(listener func(event StateChangedEvent)) Builder[R] {
-	c.halfOpenListener = listener
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnSuccess(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnSuccess(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c *config[R]) OnFailure(listener func(event failsafe.ExecutionEvent[R])) Builder[R] {
-	c.BaseFailurePolicy.OnFailure(listener)
-	return c
+	_ = "STUB: not implemented"
+	return nil
 }

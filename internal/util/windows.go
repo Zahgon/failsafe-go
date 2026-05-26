@@ -1,7 +1,6 @@
 package util
 
 import (
-	"math"
 	"time"
 )
 
@@ -19,66 +18,32 @@ type MovingSum struct {
 	sumSquares float64
 }
 
-func NewMovingSum(capacity uint) MovingSum {
-	return MovingSum{samples: make([]float64, capacity)}
-}
+func NewMovingSum(capacity uint) MovingSum { _ = "STUB: not implemented"; return *new(MovingSum) }
 
 // Add adds the value to the window if it's non-zero, updates the sums, and returns the old value along with whether the
 // window is full.
 func (r *MovingSum) Add(value float64) (oldValue float64, full bool) {
-	if value != 0 {
-		if r.size == len(r.samples) {
-			full = true
-
-			// Remove oldest value
-			oldValue = r.samples[r.index]
-			r.sumY -= oldValue
-			r.sumSquares -= oldValue * oldValue
-		} else {
-			r.size++
-		}
-
-		// Add new value
-		r.samples[r.index] = value
-
-		// Update rolling computations
-		r.sumY += value
-		r.sumSquares += value * value
-
-		// Move index forward
-		r.index = (r.index + 1) % len(r.samples)
-	}
-
-	return oldValue, full
+	_ = "STUB: not implemented"
+	return 0, false
 }
+
+// Remove oldest value
+
+// Add new value
+
+// Update rolling computations
+
+// Move index forward
 
 // CalculateCV calculates the coefficient of variation (relative variance), mean, and variance for the sum. Returns NaN
 // values if there are < 2 samples, the variance is < 0, or the mean is 0.
 func (r *MovingSum) CalculateCV() (cv, mean, variance float64) {
-	if r.size < 2 {
-		return math.NaN(), math.NaN(), math.NaN()
-	}
-
-	mean = r.sumY / float64(r.size)
-	variance = (r.sumSquares / float64(r.size)) - (mean * mean)
-	if variance < 0 || mean == 0 {
-		return math.NaN(), math.NaN(), math.NaN()
-	}
-
-	cv = math.Sqrt(variance) / mean
-	return cv, mean, variance
+	_ = "STUB: not implemented"
+	return 0, 0, 0
 }
 
 // Reset resets the sum to its initial state.
-func (r *MovingSum) Reset() {
-	for i := range r.samples {
-		r.samples[i] = 0
-	}
-	r.size = 0
-	r.index = 0
-	r.sumY = 0
-	r.sumSquares = 0
-}
+func (r *MovingSum) Reset() { _ = "STUB: not implemented"; return }
 
 // CorrelationWindow maintains the correlation between two rolling windows.
 //
@@ -93,11 +58,8 @@ type CorrelationWindow struct {
 }
 
 func NewCorrelationWindow(capacity uint, warmupSamples uint8) CorrelationWindow {
-	return CorrelationWindow{
-		warmupSamples: warmupSamples,
-		xSamples:      NewMovingSum(capacity),
-		ySamples:      NewMovingSum(capacity),
-	}
+	_ = "STUB: not implemented"
+	return *new(CorrelationWindow)
 }
 
 // Add adds the values to the window and returns the current correlation coefficient.
@@ -105,50 +67,20 @@ func NewCorrelationWindow(capacity uint, warmupSamples uint8) CorrelationWindow 
 // Returns a value between -1 and 0 when a correlation between increasing x and decreasing y values is present.
 // Returns 0 values if < warmup or low CV (< .01)
 func (w *CorrelationWindow) Add(x, y float64) (correlation, cvX, cvY float64) {
-	if math.IsInf(x, 0) || math.IsInf(y, 0) {
-		return 0, 0, 0
-	}
-
-	oldX, full := w.xSamples.Add(x)
-	oldY, _ := w.ySamples.Add(y)
-	cvX, meanX, varX := w.xSamples.CalculateCV()
-	cvY, meanY, varY := w.ySamples.CalculateCV()
-
-	if full {
-		// Remove old value
-		w.corrSumXY -= oldX * oldY
-	}
-
-	// Add new value
-	w.corrSumXY += x * y
-
-	if math.IsNaN(cvX) || math.IsNaN(cvY) {
-		return 0, 0, 0
-	}
-
-	// Ignore warmup
-	if w.xSamples.size < int(w.warmupSamples) {
-		return 0, 0, 0
-	}
-
-	// Ignore measurements that vary by less than 1%
-	minCV := 0.01
-	if cvX < minCV || cvY < minCV {
-		return 0, cvX, cvY
-	}
-
-	covariance := (w.corrSumXY / float64(w.xSamples.size)) - (meanX * meanY)
-	correlation = covariance / (math.Sqrt(varX) * math.Sqrt(varY))
-
-	return correlation, cvX, cvY
+	_ = "STUB: not implemented"
+	return 0, 0, 0
 }
+
+// Remove old value
+
+// Add new value
+
+// Ignore warmup
+
+// Ignore measurements that vary by less than 1%
 
 // Reset resets the window to its initial state.
-func (w *CorrelationWindow) Reset() {
-	w.xSamples.Reset()
-	w.ySamples.Reset()
-	w.corrSumXY = 0
-}
+func (w *CorrelationWindow) Reset() { _ = "STUB: not implemented"; return }
 
 // MaxWindow maintains the maximum value over a sliding time window using a monotonic deque.
 // This provides O(1) amortized insertion and O(1) max retrieval.
@@ -165,48 +97,29 @@ type maxWindowEntry struct {
 }
 
 func NewMaxWindow(window time.Duration) MaxWindow {
-	return MaxWindow{window: window}
+	_ = "STUB: not implemented"
+	return *new(MaxWindow)
 }
 
 // Configured returns true if the MaxWindow has a non-zero window duration.
-func (w *MaxWindow) Configured() bool {
-	return w.window > 0
-}
+func (w *MaxWindow) Configured() bool { _ = "STUB: not implemented"; return false }
 
 // Add adds a value to the window and returns the current maximum.
 func (w *MaxWindow) Add(value int, now time.Time) int {
+	_ = "STUB: not implemented"
 	// Remove expired entries from front
-	cutoff := now.Add(-w.window)
-	start := 0
-	for start < len(w.deque) && !w.deque[start].timestamp.After(cutoff) {
-		start++
-	}
-	w.deque = w.deque[start:]
-
-	// Remove entries from back that are <= the new value
-	for len(w.deque) > 0 && w.deque[len(w.deque)-1].value <= value {
-		w.deque = w.deque[:len(w.deque)-1]
-	}
-
-	// Add new entry
-	w.deque = append(w.deque, maxWindowEntry{value: value, timestamp: now})
-	return w.Value()
+	return 0
 }
+
+// Remove entries from back that are <= the new value
+
+// Add new entry
 
 // Value gets the current value of the moving average.
-func (w *MaxWindow) Value() int {
-	if !w.Configured() {
-		return 0
-	}
-	return w.deque[0].value
-}
+func (w *MaxWindow) Value() int { _ = "STUB: not implemented"; return 0 }
 
 // Reset resets the window to its initial state.
-func (w *MaxWindow) Reset() {
-	if w.Configured() {
-		w.deque = w.deque[:0]
-	}
-}
+func (w *MaxWindow) Reset() { _ = "STUB: not implemented"; return }
 
 // BucketedWindow is a time based bucketed sliding window.
 // T is the bucket type.
@@ -230,26 +143,6 @@ type BucketedWindow[T any] struct {
 }
 
 // ExpireBuckets resets any old buckets and returns the current bucket, sliding the window as needed.
-func (w *BucketedWindow[T]) ExpireBuckets() *T {
-	newHead := w.Clock.Now().UnixNano() / w.BucketNanos
+func (w *BucketedWindow[T]) ExpireBuckets() *T { _ = "STUB: not implemented"; return nil }
 
-	if newHead > w.HeadTime {
-		bucketsToMove := min(w.BucketCount, newHead-w.HeadTime)
-		for i := int64(0); i < bucketsToMove; i++ {
-			bucket := &w.Buckets[(w.HeadTime+i+1)%w.BucketCount]
-			w.RemoveFn(&w.Summary, bucket)
-			w.ResetFn(bucket)
-		}
-		w.HeadTime = newHead
-	}
-
-	return &w.Buckets[w.HeadTime%w.BucketCount]
-}
-
-func (w *BucketedWindow[T]) Reset() {
-	for i := range w.Buckets {
-		w.ResetFn(&w.Buckets[i])
-	}
-	w.ResetFn(&w.Summary)
-	w.HeadTime = 0
-}
+func (w *BucketedWindow[T]) Reset() { _ = "STUB: not implemented"; return }

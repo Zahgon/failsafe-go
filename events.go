@@ -28,9 +28,6 @@ type ExecutionDoneEvent[R any] struct {
 }
 
 func newExecutionDoneEvent[R any](info ExecutionInfo, er *common.PolicyResult[R]) ExecutionDoneEvent[R] {
-	return ExecutionDoneEvent[R]{
-		ExecutionInfo: info,
-		Result:        er.Result,
-		Error:         er.Error,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
